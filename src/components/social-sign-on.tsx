@@ -30,10 +30,7 @@ interface SocialSignOnProps {
 }
 
 // Internal mutation hook
-function useSocialSignOn(
-  signIn: typeof defaultSignIn,
-  callbackUrl?: RoutePath,
-) {
+function useSocialSignOn(signIn: typeof defaultSignIn, callbackUrl?: RoutePath) {
   return useMutation({
     mutationFn: async (provider: SocialSignOnProvider) => {
       if (provider.onClick) {
@@ -52,17 +49,13 @@ function useSocialSignOn(
   })
 }
 
-export default function SocialSignOn({
-  signIn = defaultSignIn,
-  callbackUrl,
-}: SocialSignOnProps) {
+export default function SocialSignOn({ signIn = defaultSignIn, callbackUrl }: SocialSignOnProps) {
   const mutation = useSocialSignOn(signIn, callbackUrl)
 
   return (
     <div className="space-y-2">
       {socialSignOnProviders.map((provider) => {
-        const isLoading =
-          mutation.isPending && mutation.variables?.name === provider.name
+        const isLoading = mutation.isPending && mutation.variables?.name === provider.name
 
         return (
           <Button
@@ -72,12 +65,7 @@ export default function SocialSignOn({
             disabled={isLoading}
             onClick={() => mutation.mutate(provider)}
           >
-            <Image
-              src={provider.imageUrl}
-              alt={`${provider.name} logo`}
-              width={16}
-              height={16}
-            />
+            <Image src={provider.imageUrl} alt={`${provider.name} logo`} width={16} height={16} />
             <div>
               <span>Continue with </span>
               <span className="capitalize">{provider.name}</span>

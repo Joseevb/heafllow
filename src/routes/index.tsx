@@ -7,16 +7,10 @@ import * as z from 'zod'
 import SocialSignOn from '@/components/social-sign-on'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import {
-  FieldGroup,
-  Field,
-  FieldLabel,
-  FieldError,
-  FieldDescription,
-} from '@/components/ui/field'
+import { FieldGroup, Field, FieldLabel, FieldError, FieldDescription } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { db } from '@/db'
-import { user } from '@/db/schemas'
+import { users } from '@/db/schemas'
 import { authClient } from '@/lib/auth-client'
 
 export const Route = createFileRoute('/')({ component: Home })
@@ -27,9 +21,7 @@ const schema = z.object({
   password: z.string(),
 })
 
-const getUsersServerFn = createServerFn().handler(
-  async () => await db.select().from(user),
-)
+const getUsersServerFn = createServerFn().handler(async () => await db.select().from(users))
 
 function Home() {
   const getUsers = useServerFn(getUsersServerFn)
@@ -40,9 +32,7 @@ function Home() {
   })
 
   const form = useForm({
-    defaultValues: { name: '', email: '', password: '' } satisfies z.infer<
-      typeof schema
-    >,
+    defaultValues: { name: '', email: '', password: '' } satisfies z.infer<typeof schema>,
     validators: {
       onSubmit: schema,
     },
@@ -58,13 +48,11 @@ function Home() {
           e.preventDefault()
           form.handleSubmit()
         }}
-        method="POST"
       >
         <FieldGroup>
           <form.Field name="name">
             {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>Name</FieldLabel>
@@ -87,8 +75,7 @@ function Home() {
 
           <form.Field name="email">
             {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>Email</FieldLabel>
@@ -111,8 +98,7 @@ function Home() {
 
           <form.Field name="password">
             {(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
+              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>Password</FieldLabel>
