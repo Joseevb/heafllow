@@ -45,6 +45,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
+    "drizzle-zod": "^0.8.3",
     "lucide-react": "^1.11.0",
     "next-themes": "^0.4.6",
     "nitro": "npm:nitro-nightly@3.0.1-20260422-130055-135f762d",
@@ -77,6 +78,7 @@
     "nano-staged": "^1.0.2",
     "oxfmt": "^0.46.0",
     "oxlint": "^1.61.0",
+    "portless": "^0.12.0",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.0",
@@ -91,5 +93,9 @@
       "esbuild",
       "lightningcss"
     ]
+  },
+  "portless": {
+    "name": "healflow",
+    "script": "dev"
   }
 }
