@@ -100,4 +100,7 @@ export const auth = betterAuth({
       },
     },
   },
+  experimental: {
+    joins: true,
+  },
 })
