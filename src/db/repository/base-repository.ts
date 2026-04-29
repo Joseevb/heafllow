@@ -42,7 +42,7 @@ interface BaseRepositoryContract<TTable extends SQLiteTable, TIdentifier> {
 
 export class BaseRepository<
   TTable extends SQLiteTable,
-  TSchema extends Record<string, object> = Record<string, never>,
+  TSchema extends Record<string, object> = Record<string, object>,
   TIdentifier extends string | number | boolean | null = string,
 > implements BaseRepositoryContract<TTable, TIdentifier> {
   #db: BunSQLiteDatabase<TSchema>
