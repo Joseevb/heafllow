@@ -1,0 +1,8 @@
+process.env.NODE_ENV = 'test'
+process.env.BETTER_AUTH_SECRET = 'test-secret'
+process.env.BETTER_AUTH_URL = 'http://localhost:3000'
+process.env.DB_FILE_NAME = ':memory:'
+process.env.GOOGLE_CLIENT_ID = 'test-client-id'
+process.env.GOOGLE_CLIENT_SECRET = 'test-client-secret'
+process.env.RESEND_API_KEY = 'test-resend-key'
+process.env.RESEND_EMAIL_FROM = 'test@example.com'
