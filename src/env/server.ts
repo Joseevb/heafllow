@@ -15,6 +15,15 @@ export const env = createEnv({
 
     RESEND_API_KEY: z.string().nonempty().nonoptional(),
     RESEND_EMAIL_FROM: z.string().nonempty().nonoptional(),
+
+    STRIPE_SECRET_KEY: z.string().nonempty().nonoptional(),
+    STRIPE_WEBHOOK_SECRET: z.string().nonempty().nonoptional(),
+    STRIPE_MONTHLY_PRICE_ID: z.string().nonempty().nonoptional(),
+    STRIPE_YEARLY_PRICE_ID: z.string().nonempty().nonoptional(),
+
+    SESSION_SECRET: z.string().nonempty().nonoptional(),
+
+    NODE_ENV: z.enum(['development', 'production']).nonoptional().default('development'),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
