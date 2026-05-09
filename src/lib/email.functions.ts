@@ -24,33 +24,29 @@ class EmailSendError extends TaggedError('EmailSendError')<{
   cause: unknown
 }>() {}
 
-const program = (params: z.infer<typeof sendEmailSchema>) =>
-  Result.tryPromise({
-    try: async () => {
-      const res = await resend.emails.send({
-        from: env.RESEND_EMAIL_FROM,
-        to: params.to,
-        subject: params.subject,
-        react: params.react,
-      })
-
-      if (res.error) {
-        throw new Error(res.error.message)
-      }
-
-      return { id: res.data?.id, data: res.data }
-    },
-    catch: (cause) =>
-      new EmailSendError({
-        message: cause instanceof Error ? cause.message : 'Failed to send',
-        cause,
-      }),
-  })
-
 export const sendEmail = createServerFn({ method: 'POST' })
   .inputValidator(sendEmailSchema)
   .middleware([ensureSessionMiddleware])
-  .handler(async ({ data }) => {
-    const result = await program(data)
-    return safeSerialize(result)
-  })
+  .handler(async ({ data: params }) =>
+    Result.tryPromise({
+      try: async () => {
+        const res = await resend.emails.send({
+          from: env.RESEND_EMAIL_FROM,
+          to: params.to,
+          subject: params.subject,
+          react: params.react,
+        })
+
+        if (res.error) {
+          throw new Error(res.error.message)
+        }
+
+        return { id: res.data?.id, data: res.data }
+      },
+      catch: (cause) =>
+        new EmailSendError({
+          message: cause instanceof Error ? cause.message : 'Failed to send',
+          cause,
+        }),
+    }).then(safeSerialize),
+  )
