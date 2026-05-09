@@ -1,9 +1,10 @@
 import type { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite'
-import type * as schema from '../../../src/db/schemas'
 
 import { Database } from 'bun:sqlite'
 import { beforeEach, describe, expect, test } from 'bun:test'
 import { drizzle } from 'drizzle-orm/bun-sqlite'
+
+import type * as schema from '../../../src/db/schemas'
 
 import { ClientMedicinesRepository } from '../../../src/db/repository/client-medicines.repository'
 import { clientMedicines } from '../../../src/db/schemas'

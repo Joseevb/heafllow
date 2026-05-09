@@ -19,7 +19,9 @@ interface MockServerChain {
   ) => (input: TInput) => Promise<TResult>
 }
 
-const sendMock = mock(async (): Promise<SendResponse> => ({ data: { id: 'email-123' }, error: null }))
+const sendMock = mock(
+  async (): Promise<SendResponse> => ({ data: { id: 'email-123' }, error: null }),
+)
 
 const createServerFnMock = (): MockServerChain => {
   let validator: Validator | undefined

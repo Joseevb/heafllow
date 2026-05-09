@@ -1,7 +1,8 @@
+import type { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite'
+
 import { Database } from 'bun:sqlite'
 import { beforeEach, describe, expect, test } from 'bun:test'
 import { sql } from 'drizzle-orm'
-import type { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite'
 import { drizzle } from 'drizzle-orm/bun-sqlite'
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 

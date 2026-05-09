@@ -1,9 +1,10 @@
 import type { BunSQLiteDatabase } from 'drizzle-orm/bun-sqlite'
-import type * as schema from '../../../src/db/schemas'
 
 import { Database } from 'bun:sqlite'
 import { beforeEach, describe, expect, test } from 'bun:test'
 import { drizzle } from 'drizzle-orm/bun-sqlite'
+
+import type * as schema from '../../../src/db/schemas'
 
 import { SpecialistsDataRepository } from '../../../src/db/repository/specialists-data.repository'
 import { specialistsData } from '../../../src/db/schemas'
@@ -22,7 +23,7 @@ describe('SpecialistsDataRepository', () => {
         license_number TEXT NOT NULL,
         consultation_duration_minutes INTEGER NOT NULL,
         specialist_id TEXT NOT NULL,
-        specialty_id TEXT NOT NULL,
+        specialty TEXT NOT NULL,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
       )
@@ -39,21 +40,21 @@ describe('SpecialistsDataRepository', () => {
           licenseNumber: 'LIC-1',
           consultationDurationMinutes: 30,
           specialistId: 'spec1',
-          specialtyId: 'cardiology',
+          specialty: 'cardiology',
         },
         {
           id: '2',
           licenseNumber: 'LIC-2',
           consultationDurationMinutes: 45,
           specialistId: 'spec2',
-          specialtyId: 'dermatology',
+          specialty: 'dermatology',
         },
       ])
 
       const results = await repo.findBySpecialistId('spec1')
       expect(results.length).toBe(1)
       expect(results[0].specialistId).toBe('spec1')
-      expect(results[0].specialtyId).toBe('cardiology')
+      expect(results[0].specialty).toBe('cardiology')
     })
 
     test('should return empty array when specialist not found', async () => {

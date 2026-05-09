@@ -50,10 +50,12 @@ const transactionMock = mock(async (callback: TransactionCallback) =>
     delete: deleteMock,
   }),
 )
-const updateUserMock = mock(async (): Promise<MockUpdateUserResponse> => ({
-  data: null,
-  error: null,
-}))
+const updateUserMock = mock(
+  async (): Promise<MockUpdateUserResponse> => ({
+    data: null,
+    error: null,
+  }),
+)
 
 mock.module('@tanstack/react-start', () => ({
   createServerFn: createServerFnMock,
