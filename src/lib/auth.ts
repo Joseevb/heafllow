@@ -132,7 +132,7 @@ export const auth = betterAuth({
       },
       onboardingComplete: {
         type: 'boolean',
-        required: true,
+        required: false,
         default: false,
         input: false,
       },
