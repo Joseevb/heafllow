@@ -67,7 +67,7 @@ function RouteComponent() {
 
   return (
     <div className="container grid min-h-screen min-w-screen place-items-center">
-      <Card className="relative w-full max-w-md [view-transition-name:auth-card] md:max-w-lg">
+      <Card className="relative w-full max-w-md [view-transition-name:auth-card] md:min-w-5xl">
         <CardHeader>
           <CardTitle>Sign Up</CardTitle>
           <CardDescription>Create a New Account</CardDescription>

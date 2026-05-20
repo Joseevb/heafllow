@@ -42,7 +42,7 @@ export const UserDataForm = withForm({
         form.handleSubmit()
       }}
     >
-      <FieldGroup>
+      <FieldGroup className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto_1fr] md:gap-6">
         <FieldSet>
           <FieldLegend>Personal Information</FieldLegend>
           <FieldDescription>
@@ -91,13 +91,14 @@ export const UserDataForm = withForm({
           </FieldGroup>
         </FieldSet>
 
-        <Separator />
+        <Separator className="md:hidden" />
+        <Separator orientation="vertical" className="hidden h-full md:block" />
 
         <FieldSet>
           <FieldLegend>Address</FieldLegend>
           <FieldDescription>Complete your address information</FieldDescription>
           <FieldGroup>
-            <div className="grid grid-cols-2 md:gap-2 lg:grid-cols-2">
+            <div className="grid grid-cols-2 gap-2 md:gap-4">
               <form.AppField name="address.street">
                 {(field) => (
                   <field.TextField
@@ -121,9 +122,7 @@ export const UserDataForm = withForm({
                   />
                 )}
               </form.AppField>
-            </div>
 
-            <div className="grid grid-cols-2 md:gap-2 lg:grid-cols-2">
               <form.AppField name="address.state">
                 {(field) => (
                   <field.TextField
@@ -147,9 +146,7 @@ export const UserDataForm = withForm({
                   />
                 )}
               </form.AppField>
-            </div>
 
-            <div className="grid grid-cols-2 md:gap-2 lg:grid-cols-2">
               <form.AppField name="address.zipCode">
                 {(field) => (
                   <field.TextField
