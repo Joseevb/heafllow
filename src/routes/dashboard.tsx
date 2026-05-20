@@ -1,176 +1,77 @@
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
-import { eq } from 'drizzle-orm'
-import { InfoIcon } from 'lucide-react'
-import * as z from 'zod'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { Activity, Calendar, FileText, Home, Pill, Settings } from 'lucide-react'
 
-import type { Address } from '@/db/types/addresses.zod'
-import type { User } from '@/db/types/auth.zod'
-import type { Client } from '@/db/types/clients.zod'
+import type { SidebarItems } from '@/components/app-sidebar'
+import type { RoutePath } from '@/types/routes'
 
-import { ModeToggle } from '@/components/mode-toggle'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogMedia,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { db } from '@/db'
-import { ClientsRepository } from '@/db/repository/clients-repository'
-import { accounts, addresses, clients, sessions, subscriptions } from '@/db/schemas'
-import { authClient } from '@/lib/auth-client'
-import { finalizeOnboardingIfReady, getSession } from '@/lib/auth.functions'
-
-const getClientData = createServerFn()
-  .inputValidator(z.string())
-  .handler(async ({ data: clientId }) => {
-    const repo = new ClientsRepository(db, clients)
-    return await repo.findByClientId(clientId)
-  })
-
-const getAddressData = createServerFn()
-  .inputValidator(z.string())
-  .handler(async ({ data: userId }) => {
-    const result = await db.select().from(addresses).where(eq(addresses.userId, userId)).limit(1)
-
-    return result[0]
-  })
-
-const getAuthData = createServerFn()
-  .inputValidator(z.string())
-  .handler(async ({ data: userId }) => {
-    const [userSessions, userAccounts, userSubscriptions] = await Promise.all([
-      db.select().from(sessions).where(eq(sessions.userId, userId)),
-      db.select().from(accounts).where(eq(accounts.userId, userId)),
-      db.select().from(subscriptions).where(eq(subscriptions.referenceId, userId)),
-    ])
-
-    return {
-      sessions: userSessions,
-      accounts: userAccounts,
-      subscriptions: userSubscriptions,
-    }
-  })
+import { AppSidebar } from '@/components/app-sidebar'
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { UserMenu } from '@/components/user-menu'
+import { getSession } from '@/lib/auth.functions'
 
 export const Route = createFileRoute('/dashboard')({
   component: RouteComponent,
   beforeLoad: async () => {
-    await finalizeOnboardingIfReady()
-
     const session = await getSession()
 
     if (!session) throw redirect({ to: '/auth' })
 
-    const clientData = await getClientData({ data: session.user.id })
-    const addressData = await getAddressData({ data: session.user.id })
-    const authData = await getAuthData({ data: session.user.id })
-
-    if (!clientData) {
-      throw redirect({ to: '/auth/sign-up/payment' })
-    }
-
-    const user: User = {
-      ...session.user,
-      image: session.user.image ?? null,
-      role: session.user.role ?? null,
-      banned: session.user.banned ?? null,
-      banReason: session.user.banReason ?? null,
-      banExpires: session.user.banExpires ?? null,
-      stripeCustomerId: session.user.stripeCustomerId ?? null,
-      deletedAt: session.user.deletedAt ?? null,
-    }
-
-    return { user, clientData, addressData, authData }
-  },
-  errorComponent: ({ error, info, reset }) => {
-    console.error('\nError\n', error, '\nInfo\n', info)
-    return (
-      <AlertDialog open>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogMedia>
-              <InfoIcon />
-            </AlertDialogMedia>
-            <AlertDialogTitle>An error has occurred</AlertDialogTitle>
-            <AlertDialogDescription>
-              An error happened when loading the page.
-              <br />
-              Please try to load the page again, and if it continues contact support.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction className="cursor-pointer" onClick={reset}>
-              Reload
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    )
+    return { session }
   },
 })
 
-type DashboardData = {
-  authUser: User
-  client: Client
-  address: Address | undefined
-  sessions: Array<typeof sessions.$inferSelect>
-  accounts: Array<typeof accounts.$inferSelect>
-  subscriptions: Array<typeof subscriptions.$inferSelect>
-}
-
-function buildDashboardData(
-  user: User,
-  clientData: Client,
-  addressData: Address | undefined,
-  authData: {
-    sessions: Array<typeof sessions.$inferSelect>
-    accounts: Array<typeof accounts.$inferSelect>
-    subscriptions: Array<typeof subscriptions.$inferSelect>
+const sidebarItems = (_baseUrl: RoutePath): SidebarItems => [
+  {
+    title: 'Dashboard',
+    icon: Home,
+    url: '/dashboard',
   },
-): DashboardData {
-  return {
-    authUser: user,
-    client: clientData,
-    address: addressData,
-    sessions: authData.sessions,
-    accounts: authData.accounts,
-    subscriptions: authData.subscriptions,
-  }
-}
+  {
+    title: 'Appointments',
+    icon: Calendar,
+    url: '/dashboard/appointments',
+  },
+  {
+    title: 'Medications',
+    icon: Pill,
+    url: '/dashboard/medications',
+  },
+  {
+    title: 'Health Metrics',
+    icon: Activity,
+    url: '/dashboard/health-metrics',
+  },
+  {
+    title: 'Medical Records',
+    icon: FileText,
+    url: '/dashboard' as RoutePath,
+  },
+  {
+    title: 'Settings',
+    icon: Settings,
+    url: '/dashboard/settings',
+  },
+]
 
 function RouteComponent() {
-  const { user, clientData, addressData, authData } = Route.useRouteContext()
-
-  const navigate = useNavigate()
-
-  const data = buildDashboardData(user, clientData, addressData, authData)
+  const {
+    session: { user },
+  } = Route.useRouteContext()
 
   return (
-    <div>
-      <Button
-        variant="destructive"
-        onClick={async () => {
-          await authClient.signOut()
-          navigate({ to: '/auth' })
-        }}
-      >
-        Logout
-      </Button>
-      <ModeToggle mode="small" />
-      <Card>
-        <CardHeader>
-          <CardTitle>Hello "/dashboard"!</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </CardContent>
-      </Card>
-    </div>
+    <SidebarProvider defaultOpen={true}>
+      <div className="flex min-h-screen w-full">
+        <AppSidebar
+          renderTrigger={true}
+          baseUrl="/dashboard"
+          items={sidebarItems}
+          footer={<UserMenu user={user} />}
+        />
+
+        <SidebarInset>
+          <Outlet />
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   )
 }
