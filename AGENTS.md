@@ -93,3 +93,9 @@ tests/               Mirrors src layout
 ## Environment
 
 All vars validated at import time by `@t3-oss/env-core`. See `src/env/server.ts` and `src/env/client.ts` (client prefix: `VITE_`). Required vars include: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `DB_FILE_NAME`, `GOOGLE_CLIENT_ID/SECRET`, `RESEND_API_KEY/FROM`, `STRIPE_SECRET_KEY/WEBHOOK_SECRET/MONTHLY_PRICE_ID/YEARLY_PRICE_ID`.
+
+## Verification Processes
+
+- Run `bunx tsgo` to validate the types (or `bun typecheck`)
+- Run `bun lint` to validate the linting (and `bun lint --fix` for fixable errors)
+- Never use `tsc`, use the modern `tsgo` alternative
