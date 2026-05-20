@@ -15,8 +15,8 @@ export const insertAppointmentsSchema = createInsertSchema(appointments, {
   cancellationReason: z.string().optional(),
   notes: z.string().optional(),
 
-  clientId: z.uuid().nonempty().nonoptional(),
-  specialistId: z.uuid().nonempty().nonoptional(),
+  clientId: z.string().nonempty().nonoptional(),
+  specialistId: z.string().nonempty().nonoptional(),
 }).omit({
   id: true,
   createdAt: true,
@@ -36,8 +36,8 @@ export const updateAppointmentsSchema = createUpdateSchema(appointments, {
   cancellationReason: z.string().optional(),
   notes: z.string().optional(),
 
-  clientId: z.uuid().nonempty().optional(),
-  specialistId: z.uuid().nonempty().optional(),
+  clientId: z.string().nonempty().optional(),
+  specialistId: z.string().nonempty().optional(),
 }).omit({
   id: true,
   createdAt: true,

@@ -1,26 +1,32 @@
 import { relations } from 'drizzle-orm'
 import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core'
 
-export const users = sqliteTable('users', {
-  id: text('id').primaryKey(),
-  name: text('name').notNull(),
-  email: text('email').notNull().unique(),
-  emailVerified: integer('email_verified', { mode: 'boolean' }).default(false).notNull(),
-  image: text('image'),
-  createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
-    .$onUpdate(() => new Date())
-    .notNull(),
-  role: text('role'),
-  banned: integer('banned', { mode: 'boolean' }).default(false),
-  banReason: text('ban_reason'),
-  banExpires: integer('ban_expires', { mode: 'timestamp_ms' }),
-  stripeCustomerId: text('stripe_customer_id'),
-  deletedAt: integer('deleted_at', { mode: 'timestamp_ms' }),
-  onboardingComplete: integer('onboarding_complete', {
-    mode: 'boolean',
-  }).notNull(),
-})
+export const users = sqliteTable(
+  'users',
+  {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    email: text('email').notNull().unique(),
+    emailVerified: integer('email_verified', { mode: 'boolean' }).default(false).notNull(),
+    image: text('image'),
+    createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull(),
+    updatedAt: integer('updated_at', { mode: 'timestamp_ms' })
+      .$onUpdate(() => new Date())
+      .notNull(),
+    role: text('role'),
+    banned: integer('banned', { mode: 'boolean' }).default(false),
+    banReason: text('ban_reason'),
+    banExpires: integer('ban_expires', { mode: 'timestamp_ms' }),
+    stripeCustomerId: text('stripe_customer_id'),
+    deletedAt: integer('deleted_at', { mode: 'timestamp_ms' }),
+    onboardingComplete: integer('onboarding_complete', {
+      mode: 'boolean',
+    })
+      .default(false)
+      .notNull(),
+  },
+  (table) => [index('users_role_idx').on(table.role)],
+)
 
 export const sessions = sqliteTable(
   'sessions',
@@ -85,27 +91,31 @@ export const verifications = sqliteTable(
   (table) => [index('verifications_identifier_idx').on(table.identifier)],
 )
 
-export const subscriptions = sqliteTable('subscriptions', {
-  id: text('id').primaryKey(),
-  plan: text('plan').notNull(),
-  referenceId: text('reference_id').notNull(),
-  stripeCustomerId: text('stripe_customer_id'),
-  stripeSubscriptionId: text('stripe_subscription_id'),
-  status: text('status').default('incomplete').notNull(),
-  periodStart: integer('period_start', { mode: 'timestamp_ms' }),
-  periodEnd: integer('period_end', { mode: 'timestamp_ms' }),
-  trialStart: integer('trial_start', { mode: 'timestamp_ms' }),
-  trialEnd: integer('trial_end', { mode: 'timestamp_ms' }),
-  cancelAtPeriodEnd: integer('cancel_at_period_end', {
-    mode: 'boolean',
-  }).default(false),
-  cancelAt: integer('cancel_at', { mode: 'timestamp_ms' }),
-  canceledAt: integer('canceled_at', { mode: 'timestamp_ms' }),
-  endedAt: integer('ended_at', { mode: 'timestamp_ms' }),
-  seats: integer('seats'),
-  billingInterval: text('billing_interval'),
-  stripeScheduleId: text('stripe_schedule_id'),
-})
+export const subscriptions = sqliteTable(
+  'subscriptions',
+  {
+    id: text('id').primaryKey(),
+    plan: text('plan').notNull(),
+    referenceId: text('reference_id').notNull(),
+    stripeCustomerId: text('stripe_customer_id'),
+    stripeSubscriptionId: text('stripe_subscription_id'),
+    status: text('status').default('incomplete').notNull(),
+    periodStart: integer('period_start', { mode: 'timestamp_ms' }),
+    periodEnd: integer('period_end', { mode: 'timestamp_ms' }),
+    trialStart: integer('trial_start', { mode: 'timestamp_ms' }),
+    trialEnd: integer('trial_end', { mode: 'timestamp_ms' }),
+    cancelAtPeriodEnd: integer('cancel_at_period_end', {
+      mode: 'boolean',
+    }).default(false),
+    cancelAt: integer('cancel_at', { mode: 'timestamp_ms' }),
+    canceledAt: integer('canceled_at', { mode: 'timestamp_ms' }),
+    endedAt: integer('ended_at', { mode: 'timestamp_ms' }),
+    seats: integer('seats'),
+    billingInterval: text('billing_interval'),
+    stripeScheduleId: text('stripe_schedule_id'),
+  },
+  (table) => [index('subscriptions_reference_status_idx').on(table.referenceId, table.status)],
+)
 
 export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),

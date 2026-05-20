@@ -13,7 +13,7 @@ export const insertUserMedicinesSchema = createInsertSchema(clientMedicines, {
     .nonoptional()
     .refine((date) => date >= new Date(), 'End date must be in the future'),
 
-  userId: z.uuid().nonempty().nonoptional(),
+  userId: z.string().nonempty().nonoptional(),
   medicineId: z.number().positive().nonoptional(),
 }).omit({ createdAt: true, updatedAt: true })
 export const updateUserMedicinesSchema = createUpdateSchema(clientMedicines, {
@@ -25,7 +25,7 @@ export const updateUserMedicinesSchema = createUpdateSchema(clientMedicines, {
     .optional()
     .refine((date) => date === undefined || date >= new Date(), 'End date must be in the future'),
 
-  userId: z.uuid().nonempty().optional(),
+  userId: z.string().nonempty().optional(),
   medicineId: z.number().positive().optional(),
 }).omit({ createdAt: true, updatedAt: true })
 

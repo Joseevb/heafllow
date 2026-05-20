@@ -5,10 +5,6 @@ import type { healthScore } from '@/db/schemas'
 import { BaseRepository } from '@/db/repository/base-repository'
 
 export class HealthScoreRepository extends BaseRepository<typeof healthScore> {
-  constructor(db: BaseRepository<typeof healthScore>['db'], table: typeof healthScore) {
-    super(db, table)
-  }
-
   async findByClientId(clientId: string) {
     const res = await this.db.select().from(this.table).where(eq(this.columns.userId, clientId))
     return res[0]

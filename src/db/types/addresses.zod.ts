@@ -11,7 +11,7 @@ export const insertAddressSchema = createInsertSchema(addresses, {
   country: z.string().nonempty().nonoptional(),
   zipCode: z.string().nonempty().nonoptional(),
 
-  userId: z.uuid().nonempty().nonoptional(),
+  userId: z.string().nonempty().nonoptional(),
 }).omit({ id: true, createdAt: true, updatedAt: true })
 export const updateAddressSchema = createUpdateSchema(addresses, {
   street: z.string().nonempty().optional(),
@@ -20,9 +20,13 @@ export const updateAddressSchema = createUpdateSchema(addresses, {
   country: z.string().nonempty().optional(),
   zipCode: z.string().nonempty().optional(),
 
-  userId: z.uuid().nonempty().optional(),
+  userId: z.string().nonempty().optional(),
 }).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
 })
+
+export type Address = z.infer<typeof selectAddressSchema>
+export type CreateAddress = z.infer<typeof insertAddressSchema>
+export type UpdateAddress = z.infer<typeof updateAddressSchema>

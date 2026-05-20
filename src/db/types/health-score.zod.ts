@@ -15,7 +15,7 @@ export const insertHealthScoreSchema = createInsertSchema(healthScore, {
   dataPointsCount: positiveInteger,
   periodDays: positiveInteger,
 
-  userId: z.uuid().nonempty().nonoptional(),
+  userId: z.string().nonempty().nonoptional(),
 }).omit({
   id: true,
   createdAt: true,
@@ -30,7 +30,7 @@ export const updateHealthScoreSchema = createUpdateSchema(healthScore, {
   dataPointsCount: positiveInteger,
   periodDays: positiveInteger,
 
-  userId: z.uuid().nonempty().nonoptional(),
+  userId: z.string().nonempty().nonoptional(),
 }).omit({
   id: true,
   createdAt: true,

@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { check, sqliteTable } from 'drizzle-orm/sqlite-core'
+import { check, index, sqliteTable } from 'drizzle-orm/sqlite-core'
 
 import { users } from '@/db/schemas/auth'
 
@@ -43,5 +43,9 @@ export const appointments = sqliteTable(
       .notNull()
       .$onUpdate(() => new Date()),
   }),
-  (t) => [check('client_not_specialist', sql`${t.clientId} != ${t.specialistId}`)],
+  (t) => [
+    index('appointments_client_id_idx').on(t.clientId),
+    index('appointments_specialist_id_idx').on(t.specialistId),
+    check('client_not_specialist', sql`${t.clientId} != ${t.specialistId}`),
+  ],
 )

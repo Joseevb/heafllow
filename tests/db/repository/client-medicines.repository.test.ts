@@ -34,7 +34,7 @@ describe('ClientMedicinesRepository', () => {
     repo = new ClientMedicinesRepository(db, clientMedicines)
   })
 
-  describe('findByClientId', () => {
+  describe('findAllByClientId', () => {
     test('should find all medicines for a client', async () => {
       await db.insert(clientMedicines).values([
         {
@@ -63,19 +63,19 @@ describe('ClientMedicinesRepository', () => {
         },
       ])
 
-      const results = await repo.findByClientId('client1')
+      const results = await repo.findAllByClientId('client1')
       expect(results.length).toBe(2)
       expect(results[0].userId).toBe('client1')
       expect(results[1].userId).toBe('client1')
     })
 
     test('should return empty array when client has no medicines', async () => {
-      const results = await repo.findByClientId('non-existent')
+      const results = await repo.findAllByClientId('non-existent')
       expect(results.length).toBe(0)
     })
   })
 
-  describe('findByMedicineId', () => {
+  describe('findAllByMedicineId', () => {
     test('should find all clients using a medicine', async () => {
       await db.insert(clientMedicines).values([
         {
@@ -104,14 +104,14 @@ describe('ClientMedicinesRepository', () => {
         },
       ])
 
-      const results = await repo.findByMedicineId(1)
+      const results = await repo.findAllByMedicineId(1)
       expect(results.length).toBe(2)
       expect(results[0].medicineId).toBe(1)
       expect(results[1].medicineId).toBe(1)
     })
 
     test('should return empty array when medicine not found', async () => {
-      const results = await repo.findByMedicineId(999)
+      const results = await repo.findAllByMedicineId(999)
       expect(results.length).toBe(0)
     })
   })

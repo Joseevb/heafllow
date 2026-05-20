@@ -7,10 +7,11 @@ export const selectClientSchema = createSelectSchema(clients)
 export const insertClientSchema = createInsertSchema(clients, {
   firstName: z.string().nonempty().nonoptional(),
   lastName: z.string().nonempty().nonoptional(),
+  birthDate: z.date().nonoptional(),
   phoneNumber: z.string().nonempty().nonoptional(),
 
-  clientId: z.uuid().nonempty().nonoptional(),
-  primaryCareSpecialist: z.uuid().nonempty().nonoptional(),
+  clientId: z.string().nonempty().nonoptional(),
+  primaryCareSpecialist: z.string().nonempty().nonoptional(),
 }).omit({
   id: true,
   createdAt: true,
@@ -19,10 +20,11 @@ export const insertClientSchema = createInsertSchema(clients, {
 export const updateClientSchema = createUpdateSchema(clients, {
   firstName: z.string().nonempty().optional(),
   lastName: z.string().nonempty().optional(),
+  birthDate: z.date().optional(),
   phoneNumber: z.string().nonempty().optional(),
 
-  clientId: z.uuid().nonempty().optional(),
-  primaryCareSpecialist: z.uuid().nonempty().optional(),
+  clientId: z.string().nonempty().optional(),
+  primaryCareSpecialist: z.string().nonempty().optional(),
 }).omit({
   id: true,
   createdAt: true,

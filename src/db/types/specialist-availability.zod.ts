@@ -11,7 +11,7 @@ export const insertSpecialistAvailabilitySchema = createInsertSchema(specialistA
   endTime: z.date().nonoptional(),
   isAvailable: z.boolean().nonoptional(),
 
-  specialistId: z.uuid().nonempty().nonoptional(),
+  specialistId: z.string().nonempty().nonoptional(),
 }).omit({ id: true, createdAt: true, updatedAt: true })
 export const updateSpecialistAvailabilitySchema = createUpdateSchema(specialistAvailability)
 

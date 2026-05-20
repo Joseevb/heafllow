@@ -13,8 +13,8 @@ export const insertHealthMetricSchema = createInsertSchema(healthMetrics, {
 
   notes: z.string().optional(),
 
-  recordedBySpecialistId: z.uuid().nonempty().nonoptional(),
-  clientId: z.uuid().nonempty().nonoptional(),
+  recordedBySpecialistId: z.string().nonempty().nonoptional(),
+  clientId: z.string().nonempty().nonoptional(),
 }).omit({
   id: true,
   createdAt: true,
@@ -28,8 +28,8 @@ export const updateHealthMetricSchema = createUpdateSchema(healthMetrics, {
 
   notes: z.string().optional(),
 
-  recordedBySpecialistId: z.uuid().nonempty().optional(),
-  clientId: z.uuid().nonempty().optional(),
+  recordedBySpecialistId: z.string().nonempty().optional(),
+  clientId: z.string().nonempty().optional(),
 }).omit({
   id: true,
   createdAt: true,

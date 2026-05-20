@@ -101,7 +101,10 @@ export const HealthMetricType = {
   },
 } as const
 
-export const HealthMetricTypeKeys = keysOf(HealthMetricType)
+export const HealthMetricTypeKeys = keysOf(HealthMetricType) as [
+  keyof typeof HealthMetricType,
+  ...Array<keyof typeof HealthMetricType>,
+]
 
 export type HealthMetricType = keyof typeof HealthMetricType
 

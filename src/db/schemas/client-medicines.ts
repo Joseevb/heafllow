@@ -1,4 +1,4 @@
-import { primaryKey, sqliteTable } from 'drizzle-orm/sqlite-core'
+import { index, primaryKey, sqliteTable } from 'drizzle-orm/sqlite-core'
 
 import { users } from '@/db/schemas'
 
@@ -25,5 +25,8 @@ export const clientMedicines = sqliteTable(
       .notNull()
       .$onUpdate(() => new Date()),
   }),
-  (t) => [primaryKey({ columns: [t.userId, t.medicineId] })],
+  (t) => [
+    primaryKey({ columns: [t.userId, t.medicineId] }),
+    index('client_medicines_medicine_id_idx').on(t.medicineId),
+  ],
 )

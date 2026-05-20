@@ -40,21 +40,21 @@ describe('SpecialistsDataRepository', () => {
           licenseNumber: 'LIC-1',
           consultationDurationMinutes: 30,
           specialistId: 'spec1',
-          specialty: 'cardiology',
+          specialty: 'Cardiology',
         },
         {
           id: '2',
           licenseNumber: 'LIC-2',
           consultationDurationMinutes: 45,
           specialistId: 'spec2',
-          specialty: 'dermatology',
+          specialty: 'Dermatology',
         },
       ])
 
       const results = await repo.findBySpecialistId('spec1')
       expect(results.length).toBe(1)
       expect(results[0].specialistId).toBe('spec1')
-      expect(results[0].specialty).toBe('cardiology')
+      expect(results[0].specialty).toBe('Cardiology')
     })
 
     test('should return empty array when specialist not found', async () => {
