@@ -9,26 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AdminAddSpecialistRouteImport } from './routes/admin/add-specialist'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthCallbackPaymentRouteImport } from './routes/auth/callback/payment'
-import { Route as AuthCallbackSocialRouteImport } from './routes/auth/callback/social'
-import { Route as AuthIndexRouteImport } from './routes/auth/index'
-import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
-import { Route as AuthSignUpIndexRouteImport } from './routes/auth/sign-up/index'
-import { Route as AuthSignUpPaymentRouteImport } from './routes/auth/sign-up/payment'
-import { Route as AuthSignUpUserDataRouteImport } from './routes/auth/sign-up/user-data'
+import { Route as SpecialistRouteImport } from './routes/specialist'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as DashboardAppointmentsRouteImport } from './routes/dashboard/appointments'
-import { Route as DashboardHealthMetricsRouteImport } from './routes/dashboard/health-metrics'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
-import { Route as DashboardMedicinesRouteImport } from './routes/dashboard/medicines'
-import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SpecialistIndexRouteImport } from './routes/specialist/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as SpecialistSettingsRouteImport } from './routes/specialist/settings'
+import { Route as SpecialistAvailabilityRouteImport } from './routes/specialist/availability'
+import { Route as SpecialistAppointmentsRouteImport } from './routes/specialist/appointments'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
+import { Route as DashboardMedicinesRouteImport } from './routes/dashboard/medicines'
+import { Route as DashboardHealthMetricsRouteImport } from './routes/dashboard/health-metrics'
+import { Route as DashboardAppointmentsRouteImport } from './routes/dashboard/appointments'
+import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
+import { Route as AdminAddSpecialistRouteImport } from './routes/admin/add-specialist'
+import { Route as AuthSignUpIndexRouteImport } from './routes/auth/sign-up/index'
+import { Route as SpecialistAppointmentAppointmentIdRouteImport } from './routes/specialist/appointment.$appointmentId'
+import { Route as AuthSignUpUserDataRouteImport } from './routes/auth/sign-up/user-data'
+import { Route as AuthSignUpPaymentRouteImport } from './routes/auth/sign-up/payment'
+import { Route as AuthCallbackSocialRouteImport } from './routes/auth/callback/social'
+import { Route as AuthCallbackPaymentRouteImport } from './routes/auth/callback/payment'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 
+const SpecialistRoute = SpecialistRouteImport.update({
+  id: '/specialist',
+  path: '/specialist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -49,6 +60,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SpecialistIndexRoute = SpecialistIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SpecialistRoute,
+} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -63,6 +79,21 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const SpecialistSettingsRoute = SpecialistSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => SpecialistRoute,
+} as any)
+const SpecialistAvailabilityRoute = SpecialistAvailabilityRouteImport.update({
+  id: '/availability',
+  path: '/availability',
+  getParentRoute: () => SpecialistRoute,
+} as any)
+const SpecialistAppointmentsRoute = SpecialistAppointmentsRouteImport.update({
+  id: '/appointments',
+  path: '/appointments',
+  getParentRoute: () => SpecialistRoute,
 } as any)
 const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   id: '/settings',
@@ -99,6 +130,12 @@ const AuthSignUpIndexRoute = AuthSignUpIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthSignUpRoute,
 } as any)
+const SpecialistAppointmentAppointmentIdRoute =
+  SpecialistAppointmentAppointmentIdRouteImport.update({
+    id: '/appointment/$appointmentId',
+    path: '/appointment/$appointmentId',
+    getParentRoute: () => SpecialistRoute,
+  } as any)
 const AuthSignUpUserDataRoute = AuthSignUpUserDataRouteImport.update({
   id: '/user-data',
   path: '/user-data',
@@ -130,20 +167,26 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
+  '/specialist': typeof SpecialistRouteWithChildren
   '/admin/add-specialist': typeof AdminAddSpecialistRoute
   '/auth/sign-up': typeof AuthSignUpRouteWithChildren
   '/dashboard/appointments': typeof DashboardAppointmentsRoute
   '/dashboard/health-metrics': typeof DashboardHealthMetricsRoute
   '/dashboard/medicines': typeof DashboardMedicinesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/specialist/appointments': typeof SpecialistAppointmentsRoute
+  '/specialist/availability': typeof SpecialistAvailabilityRoute
+  '/specialist/settings': typeof SpecialistSettingsRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/specialist/': typeof SpecialistIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/auth/callback/payment': typeof AuthCallbackPaymentRoute
   '/auth/callback/social': typeof AuthCallbackSocialRoute
   '/auth/sign-up/payment': typeof AuthSignUpPaymentRoute
   '/auth/sign-up/user-data': typeof AuthSignUpUserDataRoute
+  '/specialist/appointment/$appointmentId': typeof SpecialistAppointmentAppointmentIdRoute
   '/auth/sign-up/': typeof AuthSignUpIndexRoute
 }
 export interface FileRoutesByTo {
@@ -153,14 +196,19 @@ export interface FileRoutesByTo {
   '/dashboard/health-metrics': typeof DashboardHealthMetricsRoute
   '/dashboard/medicines': typeof DashboardMedicinesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/specialist/appointments': typeof SpecialistAppointmentsRoute
+  '/specialist/availability': typeof SpecialistAvailabilityRoute
+  '/specialist/settings': typeof SpecialistSettingsRoute
   '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/specialist': typeof SpecialistIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/auth/callback/payment': typeof AuthCallbackPaymentRoute
   '/auth/callback/social': typeof AuthCallbackSocialRoute
   '/auth/sign-up/payment': typeof AuthSignUpPaymentRoute
   '/auth/sign-up/user-data': typeof AuthSignUpUserDataRoute
+  '/specialist/appointment/$appointmentId': typeof SpecialistAppointmentAppointmentIdRoute
   '/auth/sign-up': typeof AuthSignUpIndexRoute
 }
 export interface FileRoutesById {
@@ -169,20 +217,26 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
+  '/specialist': typeof SpecialistRouteWithChildren
   '/admin/add-specialist': typeof AdminAddSpecialistRoute
   '/auth/sign-up': typeof AuthSignUpRouteWithChildren
   '/dashboard/appointments': typeof DashboardAppointmentsRoute
   '/dashboard/health-metrics': typeof DashboardHealthMetricsRoute
   '/dashboard/medicines': typeof DashboardMedicinesRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
+  '/specialist/appointments': typeof SpecialistAppointmentsRoute
+  '/specialist/availability': typeof SpecialistAvailabilityRoute
+  '/specialist/settings': typeof SpecialistSettingsRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/specialist/': typeof SpecialistIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/auth/callback/payment': typeof AuthCallbackPaymentRoute
   '/auth/callback/social': typeof AuthCallbackSocialRoute
   '/auth/sign-up/payment': typeof AuthSignUpPaymentRoute
   '/auth/sign-up/user-data': typeof AuthSignUpUserDataRoute
+  '/specialist/appointment/$appointmentId': typeof SpecialistAppointmentAppointmentIdRoute
   '/auth/sign-up/': typeof AuthSignUpIndexRoute
 }
 export interface FileRouteTypes {
@@ -192,20 +246,26 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/dashboard'
+    | '/specialist'
     | '/admin/add-specialist'
     | '/auth/sign-up'
     | '/dashboard/appointments'
     | '/dashboard/health-metrics'
     | '/dashboard/medicines'
     | '/dashboard/settings'
+    | '/specialist/appointments'
+    | '/specialist/availability'
+    | '/specialist/settings'
     | '/admin/'
     | '/auth/'
     | '/dashboard/'
+    | '/specialist/'
     | '/api/auth/$'
     | '/auth/callback/payment'
     | '/auth/callback/social'
     | '/auth/sign-up/payment'
     | '/auth/sign-up/user-data'
+    | '/specialist/appointment/$appointmentId'
     | '/auth/sign-up/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -215,14 +275,19 @@ export interface FileRouteTypes {
     | '/dashboard/health-metrics'
     | '/dashboard/medicines'
     | '/dashboard/settings'
+    | '/specialist/appointments'
+    | '/specialist/availability'
+    | '/specialist/settings'
     | '/admin'
     | '/auth'
     | '/dashboard'
+    | '/specialist'
     | '/api/auth/$'
     | '/auth/callback/payment'
     | '/auth/callback/social'
     | '/auth/sign-up/payment'
     | '/auth/sign-up/user-data'
+    | '/specialist/appointment/$appointmentId'
     | '/auth/sign-up'
   id:
     | '__root__'
@@ -230,20 +295,26 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/dashboard'
+    | '/specialist'
     | '/admin/add-specialist'
     | '/auth/sign-up'
     | '/dashboard/appointments'
     | '/dashboard/health-metrics'
     | '/dashboard/medicines'
     | '/dashboard/settings'
+    | '/specialist/appointments'
+    | '/specialist/availability'
+    | '/specialist/settings'
     | '/admin/'
     | '/auth/'
     | '/dashboard/'
+    | '/specialist/'
     | '/api/auth/$'
     | '/auth/callback/payment'
     | '/auth/callback/social'
     | '/auth/sign-up/payment'
     | '/auth/sign-up/user-data'
+    | '/specialist/appointment/$appointmentId'
     | '/auth/sign-up/'
   fileRoutesById: FileRoutesById
 }
@@ -252,11 +323,19 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
+  SpecialistRoute: typeof SpecialistRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/specialist': {
+      id: '/specialist'
+      path: '/specialist'
+      fullPath: '/specialist'
+      preLoaderRoute: typeof SpecialistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -285,6 +364,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/specialist/': {
+      id: '/specialist/'
+      path: '/'
+      fullPath: '/specialist/'
+      preLoaderRoute: typeof SpecialistIndexRouteImport
+      parentRoute: typeof SpecialistRoute
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -305,6 +391,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/specialist/settings': {
+      id: '/specialist/settings'
+      path: '/settings'
+      fullPath: '/specialist/settings'
+      preLoaderRoute: typeof SpecialistSettingsRouteImport
+      parentRoute: typeof SpecialistRoute
+    }
+    '/specialist/availability': {
+      id: '/specialist/availability'
+      path: '/availability'
+      fullPath: '/specialist/availability'
+      preLoaderRoute: typeof SpecialistAvailabilityRouteImport
+      parentRoute: typeof SpecialistRoute
+    }
+    '/specialist/appointments': {
+      id: '/specialist/appointments'
+      path: '/appointments'
+      fullPath: '/specialist/appointments'
+      preLoaderRoute: typeof SpecialistAppointmentsRouteImport
+      parentRoute: typeof SpecialistRoute
     }
     '/dashboard/settings': {
       id: '/dashboard/settings'
@@ -354,6 +461,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/sign-up/'
       preLoaderRoute: typeof AuthSignUpIndexRouteImport
       parentRoute: typeof AuthSignUpRoute
+    }
+    '/specialist/appointment/$appointmentId': {
+      id: '/specialist/appointment/$appointmentId'
+      path: '/appointment/$appointmentId'
+      fullPath: '/specialist/appointment/$appointmentId'
+      preLoaderRoute: typeof SpecialistAppointmentAppointmentIdRouteImport
+      parentRoute: typeof SpecialistRoute
     }
     '/auth/sign-up/user-data': {
       id: '/auth/sign-up/user-data'
@@ -417,7 +531,9 @@ const AuthSignUpRouteChildren: AuthSignUpRouteChildren = {
   AuthSignUpIndexRoute: AuthSignUpIndexRoute,
 }
 
-const AuthSignUpRouteWithChildren = AuthSignUpRoute._addFileChildren(AuthSignUpRouteChildren)
+const AuthSignUpRouteWithChildren = AuthSignUpRoute._addFileChildren(
+  AuthSignUpRouteChildren,
+)
 
 interface AuthRouteChildren {
   AuthSignUpRoute: typeof AuthSignUpRouteWithChildren
@@ -451,22 +567,45 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
-const DashboardRouteWithChildren = DashboardRoute._addFileChildren(DashboardRouteChildren)
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
+interface SpecialistRouteChildren {
+  SpecialistAppointmentsRoute: typeof SpecialistAppointmentsRoute
+  SpecialistAvailabilityRoute: typeof SpecialistAvailabilityRoute
+  SpecialistSettingsRoute: typeof SpecialistSettingsRoute
+  SpecialistIndexRoute: typeof SpecialistIndexRoute
+  SpecialistAppointmentAppointmentIdRoute: typeof SpecialistAppointmentAppointmentIdRoute
+}
+
+const SpecialistRouteChildren: SpecialistRouteChildren = {
+  SpecialistAppointmentsRoute: SpecialistAppointmentsRoute,
+  SpecialistAvailabilityRoute: SpecialistAvailabilityRoute,
+  SpecialistSettingsRoute: SpecialistSettingsRoute,
+  SpecialistIndexRoute: SpecialistIndexRoute,
+  SpecialistAppointmentAppointmentIdRoute:
+    SpecialistAppointmentAppointmentIdRoute,
+}
+
+const SpecialistRouteWithChildren = SpecialistRoute._addFileChildren(
+  SpecialistRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
+  SpecialistRoute: SpecialistRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 
-import type { createStart } from '@tanstack/react-start'
-
 import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true

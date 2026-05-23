@@ -1,54 +1,34 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import { Activity, Calendar, FileText, Home, Pill } from 'lucide-react'
+import { CalendarClock, Home, Settings } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 
 import type { SidebarItems } from '@/components/app-sidebar'
-import type { RoutePath } from '@/types/routes'
 
 import { AppSidebar } from '@/components/app-sidebar'
 import { SidebarInset, SidebarProvider, useSidebar } from '@/components/ui/sidebar'
 import { UserMenu } from '@/components/user-menu'
 import { getSession } from '@/lib/auth.functions'
 
-export const Route = createFileRoute('/dashboard')({
-  component: RouteComponent,
-  beforeLoad: async () => {
+export const Route = createFileRoute('/specialist')({
+  beforeLoad: async ({ location }) => {
     const session = await getSession()
 
-    if (!session) throw redirect({ to: '/auth' })
-    if (session.user.role == 'admin') throw redirect({ to: '/admin' })
-    if (session.user.role == 'specialist') throw redirect({ to: '/specialist' })
+    if (!session || session.user.role !== 'specialist') {
+      throw redirect({
+        to: '/auth',
+        search: { redirect: location.href },
+      })
+    }
 
     return { session }
   },
+  component: RouteComponent,
 })
 
-const sidebarItems = (_baseUrl: RoutePath): SidebarItems => [
-  {
-    title: 'Dashboard',
-    icon: Home,
-    url: '/dashboard',
-  },
-  {
-    title: 'Appointments',
-    icon: Calendar,
-    url: '/dashboard/appointments',
-  },
-  {
-    title: 'Medicines',
-    icon: Pill,
-    url: '/dashboard/medicines',
-  },
-  {
-    title: 'Health Metrics',
-    icon: Activity,
-    url: '/dashboard/health-metrics',
-  },
-  {
-    title: 'Medical Records',
-    icon: FileText,
-    url: '/dashboard' as RoutePath,
-  },
+const sidebarItems = (): SidebarItems => [
+  { title: 'Overview', icon: Home, url: '/specialist' },
+  { title: 'Appointments', icon: CalendarClock, url: '/specialist/appointments' },
+  { title: 'Availability', icon: Settings, url: '/specialist/availability' },
 ]
 
 function RouteComponent() {
@@ -58,12 +38,12 @@ function RouteComponent() {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <DashboardLayout user={user} />
+      <SpecialistLayout user={user} />
     </SidebarProvider>
   )
 }
 
-function DashboardLayout({
+function SpecialistLayout({
   user,
 }: {
   user: ReturnType<typeof Route.useRouteContext>['session']['user']
@@ -94,9 +74,11 @@ function DashboardLayout({
     <div className="flex min-h-screen w-full">
       <AppSidebar
         renderTrigger={true}
-        baseUrl="/dashboard"
+        baseUrl="/specialist"
         items={sidebarItems}
-        footer={<UserMenu user={user} compact={isUserMenuCompact} />}
+        footer={
+          <UserMenu user={user} compact={isUserMenuCompact} settingsPath="/specialist/settings" />
+        }
         handleTransitionEnd={handleSidebarTransitionEnd}
       />
 
