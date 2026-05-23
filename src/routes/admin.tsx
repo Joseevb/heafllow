@@ -69,7 +69,7 @@ function AdminLayout({ user }: { user: ReturnType<typeof Route.useRouteContext>[
         renderTrigger={true}
         baseUrl="/admin"
         items={sidebarItems}
-        footer={<UserMenu user={user} compact={isUserMenuCompact} />}
+        footer={<UserMenu user={user} compact={isUserMenuCompact} settingsPath="/admin" />}
         handleTransitionEnd={handleSidebarTransitionEnd}
       />
 

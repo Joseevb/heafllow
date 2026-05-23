@@ -2,6 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { LogOut, Settings, User as UserIcon } from 'lucide-react'
 
 import type { BetterAuthUser } from '@/types/auth'
+import type { RoutePath } from '@/types/routes'
 
 import { useTheme } from '@/components/providers/theme-provider'
 import { Button } from '@/components/ui/button'
@@ -22,7 +23,8 @@ import { getInitials } from '@/lib/utils'
 export function UserMenu({
   user,
   compact = false,
-}: Readonly<{ user: BetterAuthUser; compact?: boolean }>) {
+  settingsPath = '/dashboard/settings',
+}: Readonly<{ user: BetterAuthUser; compact?: boolean; settingsPath?: RoutePath }>) {
   const navigate = useNavigate()
   const { theme, setTheme } = useTheme()
 
@@ -56,7 +58,7 @@ export function UserMenu({
           <DropdownMenuSeparator />
           <DropdownMenuItem
             render={
-              <Link to="/dashboard/settings">
+              <Link to={settingsPath}>
                 <UserIcon className="mr-2 size-4" />
                 Profile
               </Link>
@@ -64,7 +66,7 @@ export function UserMenu({
           />
           <DropdownMenuItem
             render={
-              <Link to="/dashboard/settings">
+              <Link to={settingsPath}>
                 <Settings className="mr-2 size-4" />
                 Settings
               </Link>
