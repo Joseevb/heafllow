@@ -28,4 +28,17 @@ export class SpecialistsDataRepository extends BaseRepository<typeof specialists
 
     return rows.at(0)
   }
+
+  async updateBySpecialistId(
+    specialistId: string,
+    partial: Partial<typeof specialistsData.$inferInsert>,
+  ) {
+    const rows = await this.db
+      .update(this.table)
+      .set(partial)
+      .where(eq(this.columns.specialistId, specialistId))
+      .returning()
+
+    return rows.at(0)
+  }
 }

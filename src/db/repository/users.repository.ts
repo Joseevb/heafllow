@@ -45,4 +45,29 @@ export class UsersRepository extends BaseRepository<typeof users> {
       .from(this.table)
       .where(and(eq(this.columns.role, 'specialist'), inArray(this.columns.id, specialistIds)))
   }
+
+  async findAllActiveSpecialists() {
+    return await this.db
+      .select()
+      .from(this.table)
+      .where(and(eq(this.columns.role, 'specialist'), eq(this.columns.banned, false)))
+  }
+
+  async findActiveSpecialistById(
+    specialistId: string,
+  ): Promise<typeof users.$inferSelect | undefined> {
+    const rows = await this.db
+      .select()
+      .from(this.table)
+      .where(
+        and(
+          eq(this.columns.id, specialistId),
+          eq(this.columns.role, 'specialist'),
+          eq(this.columns.banned, false),
+        ),
+      )
+      .limit(1)
+
+    return rows.at(0)
+  }
 }

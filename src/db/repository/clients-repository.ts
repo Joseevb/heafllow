@@ -24,4 +24,11 @@ export class ClientsRepository extends BaseRepository<typeof clients> {
 
     return rows.length > 0
   }
+
+  async findAllByPrimaryCareSpecialist(specialistId: string) {
+    return await this.db
+      .select()
+      .from(this.table)
+      .where(eq(this.columns.primaryCareSpecialist, specialistId))
+  }
 }
