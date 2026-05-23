@@ -56,6 +56,31 @@ const updateUserMock = mock(
     error: null,
   }),
 )
+const createUserMock = mock(async () => ({
+  user: {
+    id: 'new-specialist-123',
+    email: 'specialist@healflow.com',
+    role: 'specialist',
+  },
+}))
+
+const selectQueue: Array<Array<Record<string, unknown>>> = []
+
+function shiftSelectResult() {
+  return (selectQueue.shift() ?? []) as Array<Record<string, unknown>>
+}
+
+function createWhereResult() {
+  return {
+    limit: async () => shiftSelectResult(),
+    then: (resolve: (value: Array<Record<string, unknown>>) => unknown) =>
+      Promise.resolve(shiftSelectResult()).then(resolve),
+  }
+}
+
+const selectWhereMock = mock(() => createWhereResult())
+const selectFromMock = mock(() => ({ where: selectWhereMock }))
+const selectMock = mock(() => ({ from: selectFromMock }))
 
 mock.module('@tanstack/react-start', () => ({
   createServerFn: createServerFnMock,
@@ -64,6 +89,7 @@ mock.module('@tanstack/react-start', () => ({
 mock.module('@/db', () => ({
   db: {
     transaction: transactionMock,
+    select: selectMock,
   },
 }))
 
@@ -77,9 +103,23 @@ mock.module('@/lib/auth-client', () => ({
 
 mock.module('@/lib/auth.functions', () => ({
   createRoleMiddleware: mock(() => ({ type: 'role-middleware' })),
+  ensureSessionMiddleware: { type: 'session-middleware' },
 }))
 
-const { softDeleteUserById, updateUserById } = await import('../../src/lib/admin.functions')
+mock.module('@/lib/auth', () => ({
+  auth: {
+    api: {
+      createUser: createUserMock,
+    },
+  },
+}))
+
+const {
+  softDeleteUserById,
+  updateUserById,
+  validateAdminUserDeletion,
+  validateAdminUserRoleTransition,
+} = await import('../../src/lib/admin.functions')
 
 describe('admin.functions', () => {
   beforeEach(() => {
@@ -90,6 +130,12 @@ describe('admin.functions', () => {
     deleteMock.mockClear()
     transactionMock.mockClear()
     updateUserMock.mockClear()
+    createUserMock.mockClear()
+    selectWhereMock.mockClear()
+    selectFromMock.mockClear()
+    selectMock.mockClear()
+
+    selectQueue.length = 0
 
     updateWhereMock.mockImplementation(async () => [])
     updateSetMock.mockImplementation(() => ({ where: updateWhereMock }))
@@ -103,6 +149,16 @@ describe('admin.functions', () => {
       }),
     )
     updateUserMock.mockImplementation(async () => ({ data: null, error: null }))
+    createUserMock.mockImplementation(async () => ({
+      user: {
+        id: 'new-specialist-123',
+        email: 'specialist@healflow.com',
+        role: 'specialist',
+      },
+    }))
+    selectWhereMock.mockImplementation(() => createWhereResult())
+    selectFromMock.mockImplementation(() => ({ where: selectWhereMock }))
+    selectMock.mockImplementation(() => ({ from: selectFromMock }))
   })
 
   test('softDeleteUserById anonymizes the target user inside a transaction', async () => {
@@ -117,17 +173,16 @@ describe('admin.functions', () => {
     expect(updatedUser).toBeDefined()
     expect(updatedUser?.name).toBe('Deleted User')
     expect(updatedUser?.email).toBe('deleted_user-123@deleted.invalid')
-    expect(updatedUser?.firstName).toBe('Deleted User')
-    expect(updatedUser?.lastName).toBe('Deleted User')
     expect(updatedUser?.image).toBeNull()
     expect(updatedUser?.emailVerified).toBe(false)
     expect(updatedUser?.deletedAt).toBeInstanceOf(Date)
-    expect(deleteMock).toHaveBeenCalled()
+    expect(deleteMock).toHaveBeenCalledTimes(2)
   })
 
   test('updateUserById returns a serialized success result', async () => {
     const response = { id: 'user-123', role: 'admin' }
     updateUserMock.mockImplementation(async () => ({ data: response, error: null }))
+    selectQueue.push([{ id: 'user-123', role: 'admin' }])
 
     const payload = { userId: 'user-123', data: { role: 'admin' } }
     const input: Parameters<typeof updateUserById>[0] = { data: payload }
@@ -145,6 +200,7 @@ describe('admin.functions', () => {
       data: null,
       error: { message: 'Update failed' },
     }))
+    selectQueue.push([{ id: 'user-123', role: 'admin' }])
 
     const result = await updateUserById({
       data: { userId: 'user-123', data: { role: 'admin' } },
@@ -154,5 +210,63 @@ describe('admin.functions', () => {
     if (result.status === 'error') {
       expect(result.error.message).toBe('Update failed')
     }
+  })
+
+  test('updateUserById blocks specialist role changes without specialist profile data', async () => {
+    selectQueue.push([{ id: 'user-123', role: 'client' }], [], [], [])
+
+    const result = await updateUserById({
+      data: { userId: 'user-123', data: { role: 'specialist' } },
+    })
+
+    expect(updateUserMock).not.toHaveBeenCalled()
+    expect(result.status).toBe('error')
+    if (result.status === 'error') {
+      expect(result.error.message).toBe(
+        'This user does not have specialist profile data yet. Create the specialist profile before changing their role to specialist.',
+      )
+    }
+  })
+
+  test('validateAdminUserRoleTransition blocks specialists with assigned clients', async () => {
+    selectQueue.push(
+      [{ id: 'user-123', role: 'specialist' }],
+      [{ id: 'client-profile' }],
+      [{ id: 'specialist-profile', specialistId: 'user-123' }],
+      [{ id: 'assigned-client' }],
+    )
+
+    const result = await validateAdminUserRoleTransition({
+      data: { userId: 'user-123', role: 'admin' },
+    })
+
+    expect(result.allowed).toBe(false)
+    expect(result.message).toBe(
+      'This specialist is still assigned as a primary care specialist for one or more clients. Reassign those clients before changing the role.',
+    )
+  })
+
+  test('validateAdminUserDeletion allows users with historical billing but no active subscription', async () => {
+    selectQueue.push([{ id: 'user-123', role: 'client' }], [])
+
+    const result = await validateAdminUserDeletion({ data: 'user-123' })
+
+    expect(result).toEqual({
+      allowed: true,
+      message: 'User can be deleted.',
+      reason: 'ok',
+    })
+  })
+
+  test('validateAdminUserDeletion blocks active subscriptions', async () => {
+    selectQueue.push([{ id: 'user-123', role: 'client' }], [{ id: 'sub-123' }])
+
+    const result = await validateAdminUserDeletion({ data: 'user-123' })
+
+    expect(result).toEqual({
+      allowed: false,
+      message: 'This user has an active subscription and cannot be deleted.',
+      reason: 'active-subscription',
+    })
   })
 })
