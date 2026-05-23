@@ -26,6 +26,7 @@ type BaseProps = {
   description?: string
   required?: boolean
   disabled?: boolean
+  placeholder?: string
 }
 
 type TextProps = BaseProps & React.ComponentProps<'input'>
@@ -34,6 +35,7 @@ type TextAreaProps = BaseProps & React.ComponentProps<'textarea'>
 
 type SelectProps = BaseProps & {
   options: Array<{ value: string; label: string }>
+  action?: (item: { value: string; label: string }) => void
 }
 
 export function TextField({
@@ -91,9 +93,28 @@ export function TextArea({ label, description, placeholder, ...props }: Readonly
   )
 }
 
-export function Select({ label, description, options, ...props }: Readonly<SelectProps>) {
+export function Select({
+  label,
+  description,
+  options,
+  placeholder,
+  action,
+  ...props
+}: Readonly<SelectProps>) {
   const field = useFieldContext<string>()
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+
+  const handleValueChange = (value: string | null) => {
+    if (!value) return
+
+    field.handleChange(value)
+
+    const selectedItem = options.find((item) => item.value === value)
+
+    if (selectedItem && action) {
+      action(selectedItem)
+    }
+  }
 
   return (
     <Field orientation="responsive" data-invalid={isInvalid}>
@@ -105,11 +126,13 @@ export function Select({ label, description, options, ...props }: Readonly<Selec
       <BaseSelect
         name={field.name}
         value={field.state.value}
-        onValueChange={(value) => field.handleChange(value ?? '')}
+        onValueChange={(value) =>
+          action ? handleValueChange(value) : field.handleChange(value ?? '')
+        }
         {...props}
       >
-        <SelectTrigger id={field.name} aria-invalid={isInvalid} className="min-w-30">
-          <SelectValue placeholder="Select">
+        <SelectTrigger id={field.name} aria-invalid={isInvalid} className="w-full min-w-30">
+          <SelectValue placeholder={placeholder}>
             {(value: string) => options.find((o) => o.value === value)?.label ?? value}
           </SelectValue>
         </SelectTrigger>

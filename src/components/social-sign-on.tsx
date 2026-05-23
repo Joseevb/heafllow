@@ -1,12 +1,9 @@
-import type { AnyUseMutationOptions } from '@tanstack/react-query'
-
 import { useMutation } from '@tanstack/react-query'
 import { Image } from '@unpic/react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
-import { signIn } from '@/lib/auth-client'
-import { createUrl } from '@/lib/utils'
+import { socialSignOnMutationOptions } from '@/queries/auth-queries'
 
 import type { SocialSignOnProvider } from '../types/auth'
 
@@ -25,27 +22,14 @@ export const socialSignOnProviders: Array<SocialSignOnProvider> = [
   },
 ]
 
-const mutationOptions = {
-  mutationKey: ['social-sign-on'],
-  mutationFn: async (provider: SocialSignOnProvider) => {
-    if (provider.onClick) {
-      provider.onClick()
-      return
-    }
-
-    signIn.social({
-      provider: provider.name,
-      callbackURL: createUrl('/auth/callback/social'),
-    })
-  },
-  onError: (err) => {
-    console.error('Error signign in: ', err)
-    toast.error(normalizeErrorMessage(err))
-  },
-} satisfies AnyUseMutationOptions
-
 export default function SocialSignOn() {
-  const mutation = useMutation(mutationOptions)
+  const mutation = useMutation({
+    ...socialSignOnMutationOptions,
+    onError: (err) => {
+      console.error('Error signign in: ', err)
+      toast.error(normalizeErrorMessage(err))
+    },
+  })
 
   return (
     <div className="space-y-2">
