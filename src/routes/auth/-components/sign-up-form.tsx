@@ -111,7 +111,7 @@ export const SignUpForm = withForm({
 
       <form.AppForm>
         <div className="mt-3 flex flex-row items-end justify-end gap-5 ">
-          <div className="flex flex-col  gap-1">
+          <div className="flex flex-col gap-1">
             <span className="text-xs text-muted-foreground">Already have an account?</span>
             <Button
               nativeButton={false}
@@ -119,8 +119,8 @@ export const SignUpForm = withForm({
               render={<Link to="/auth">Sign In</Link>}
             />
           </div>
+          <form.SubscribeButton label="Sign Up" />
         </div>
-        <form.SubscribeButton label="Sign Up" />
       </form.AppForm>
     </form>
   ),
