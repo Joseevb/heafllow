@@ -3,7 +3,7 @@ import { useStore } from '@tanstack/react-store'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 
-import type { AdminUserListItem } from '@/lib/admin.functions'
+import type { AdminUserListItem } from '@/lib/functions/admin'
 import type { AdminUserEditInput } from '@/schemas/admin'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'

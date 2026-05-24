@@ -4,7 +4,7 @@ import { db } from '@/db'
 import { HealthScoreRepository } from '@/db/repository/health-score.repository'
 import { healthScore } from '@/db/schemas'
 
-import { ensureSessionMiddleware } from './auth.functions'
+import { ensureSessionMiddleware } from './auth'
 
 const healthScoreRepository = new HealthScoreRepository(db, healthScore)
 

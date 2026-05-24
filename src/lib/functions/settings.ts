@@ -8,7 +8,7 @@ import { AddressesRepository } from '@/db/repository/addresses.repository'
 import { ClientsRepository } from '@/db/repository/clients-repository'
 import { UsersRepository } from '@/db/repository/users.repository'
 import { addresses, clients, users } from '@/db/schemas'
-import { ensureSessionMiddleware } from '@/lib/auth.functions'
+import { ensureSessionMiddleware } from '@/lib/functions/auth'
 import { settingsFormSchema } from '@/schemas/settings'
 
 const usersRepository = new UsersRepository(db, users)

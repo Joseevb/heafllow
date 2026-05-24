@@ -22,7 +22,7 @@ import {
   specialistsData,
   users,
 } from '@/db/schemas'
-import { ensureSessionMiddleware } from '@/lib/auth.functions'
+import { ensureSessionMiddleware } from '@/lib/functions/auth'
 import { safeSerialize } from '@/lib/result'
 import {
   specialistAppointmentUpdateSchema,

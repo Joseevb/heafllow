@@ -6,7 +6,7 @@ import { Resend } from 'resend'
 import * as z from 'zod'
 
 import { env } from '@/env/server'
-import { ensureSessionMiddleware } from '@/lib/auth.functions'
+import { ensureSessionMiddleware } from '@/lib/functions/auth'
 import { safeSerialize } from '@/lib/result'
 
 const resend = new Resend(env.RESEND_API_KEY)

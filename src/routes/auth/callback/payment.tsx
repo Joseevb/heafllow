@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-import { finalizeOnboarding, getSession } from '@/lib/auth.functions'
+import { finalizeOnboarding, getSession } from '@/lib/functions/auth'
 
 export const Route = createFileRoute('/auth/callback/payment')({
   server: {

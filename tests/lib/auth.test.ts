@@ -167,10 +167,10 @@ const {
   softDeleteUser,
   validateSignUpSession,
   finalizeOnboardingIfReady,
-} = await import('../../src/lib/auth.functions')
-const { ensureSessionMiddleware } = await import('../../src/lib/auth.functions')
+} = await import('../../src/lib/functions/auth')
+const { ensureSessionMiddleware } = await import('../../src/lib/functions/auth')
 
-describe('auth.functions', () => {
+describe('auth', () => {
   beforeEach(() => {
     getRequestHeadersMock.mockClear()
     setResponseStatusMock.mockClear()

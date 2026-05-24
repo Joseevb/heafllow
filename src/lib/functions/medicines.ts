@@ -4,7 +4,7 @@ import { db } from '@/db'
 import { ClientMedicinesRepository } from '@/db/repository/client-medicines.repository'
 import { clientMedicines } from '@/db/schemas'
 
-import { ensureSessionMiddleware } from './auth.functions'
+import { ensureSessionMiddleware } from './auth'
 
 const clientMedicinesRepository = new ClientMedicinesRepository(db, clientMedicines)
 

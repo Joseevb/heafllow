@@ -70,7 +70,7 @@ export const signUpBaseSchema = z.object({
   email: z.email('It must be a valid email'),
   password: passwordSchema,
   confirmPassword: passwordSchema,
-  profileImage: z.file('It must be a valid image').optional(),
+  image: z.string('It must be a valid image').optional(),
 })
 
 export const signUpSchema = signUpBaseSchema.superRefine((data, ctx) => {
@@ -99,12 +99,10 @@ const signUpBaseSchemaLenient = signUpBaseSchema.extend({
   lastName: z.string().optional().nullable().default(''),
 })
 
-export const signUpSessionAccountDataSchema = signUpBaseSchemaLenient
-  .omit({ profileImage: true })
-  .partial({ password: true, confirmPassword: true })
-  .extend({
-    profileImageRef: z.string().optional(),
-  })
+export const signUpSessionAccountDataSchema = signUpBaseSchemaLenient.partial({
+  password: true,
+  confirmPassword: true,
+})
 
 export const serializableUserDataSchema = z.object({
   phoneNumber: requiredString('Phone number cannot be empty'),

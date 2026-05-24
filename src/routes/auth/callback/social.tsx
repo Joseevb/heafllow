@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-import { getSession, signUpUser } from '@/lib/auth.functions'
+import { getSession, signUpUser } from '@/lib/functions/auth'
 
 export const Route = createFileRoute('/auth/callback/social')({
   server: {

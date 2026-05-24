@@ -1,7 +1,7 @@
 import { MoreHorizontal } from 'lucide-react'
 
 import type { DataTableColumnDef } from '@/components/data-table'
-import type { AdminUserListItem } from '@/lib/admin.functions'
+import type { AdminUserListItem } from '@/lib/functions/admin'
 
 import { DataTable } from '@/components/data-table'
 import { Badge } from '@/components/ui/badge'

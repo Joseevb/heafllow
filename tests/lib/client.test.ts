@@ -76,9 +76,9 @@ mock.module('@/db', () => ({
   },
 }))
 
-const { saveClientData, findByClientId } = await import('../../src/lib/client.functions')
+const { saveClientData, findByClientId } = await import('../../src/lib/functions/client')
 
-describe('client.functions', () => {
+describe('client', () => {
   beforeEach(() => {
     selectResults.length = 0
     insertResults.length = 0

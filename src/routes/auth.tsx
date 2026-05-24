@@ -3,7 +3,7 @@ import { ArrowLeft } from 'lucide-react'
 
 import { ModeToggle } from '@/components/mode-toggle'
 import { Button } from '@/components/ui/button'
-import { getSession } from '@/lib/auth.functions'
+import { getSession } from '@/lib/functions/auth'
 
 export const Route = createFileRoute('/auth')({
   component: RouteComponent,

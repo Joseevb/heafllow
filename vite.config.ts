@@ -43,6 +43,7 @@ export default defineConfig({
   plugins: [
     devtools(),
     nitro({
+      preset: 'bun',
       rollupConfig: {
         external: [/^@sentry\//],
       },

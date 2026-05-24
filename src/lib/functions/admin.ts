@@ -12,7 +12,7 @@ import { UsersRepository } from '@/db/repository/users.repository'
 import { accounts, clients, sessions, specialistsData, subscriptions, users } from '@/db/schemas'
 import { auth } from '@/lib/auth'
 import { authClient } from '@/lib/auth-client'
-import { createRoleMiddleware } from '@/lib/auth.functions'
+import { createRoleMiddleware } from '@/lib/functions/auth'
 import { safeSerialize } from '@/lib/result'
 import { adminAddSpecialistFormSchema } from '@/schemas/admin-add-specialist'
 

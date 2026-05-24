@@ -8,7 +8,7 @@ import type { RoutePath } from '@/types/routes'
 import { AppSidebar } from '@/components/app-sidebar'
 import { SidebarInset, SidebarProvider, useSidebar } from '@/components/ui/sidebar'
 import { UserMenu } from '@/components/user-menu'
-import { getSession } from '@/lib/auth.functions'
+import { getSession } from '@/lib/functions/auth'
 
 export const Route = createFileRoute('/dashboard')({
   component: RouteComponent,

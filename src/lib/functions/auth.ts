@@ -237,7 +237,7 @@ async function saveSocialStep(accountData: z.infer<typeof socialSignUpAccountSch
         firstName: accountData.firstName ?? '',
         lastName: accountData.lastName ?? '',
         email: accountData.email,
-        profileImageRef: accountData.image ?? undefined,
+        image: accountData.image ?? undefined,
       },
       state: 'social-sign-on',
     },
@@ -274,7 +274,7 @@ async function submitUserDataStep(userData: z.infer<typeof userDataSchema>) {
       name: `${accountData.firstName} ${accountData.lastName}`.trim(),
       email: accountData.email,
       password: accountData.password,
-      image: accountData.profileImageRef,
+      image: accountData.image,
     },
     headers,
   })
@@ -283,12 +283,7 @@ async function submitUserDataStep(userData: z.infer<typeof userDataSchema>) {
 }
 
 function serializeAccountData(accountData: z.infer<typeof signUpSchema>) {
-  const { profileImage, ...rest } = accountData
-
-  return signUpSessionAccountDataSchema.parse({
-    ...rest,
-    profileImageRef: profileImage?.name,
-  })
+  return signUpSessionAccountDataSchema.parse(accountData)
 }
 
 async function requireSignUpDraft() {

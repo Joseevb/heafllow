@@ -11,7 +11,7 @@ import {
   updateUserById,
   validateAdminUserDeletion,
   validateAdminUserRoleTransition,
-} from '@/lib/admin.functions'
+} from '@/lib/functions/admin'
 
 function unwrapServerResult<T>(
   result:

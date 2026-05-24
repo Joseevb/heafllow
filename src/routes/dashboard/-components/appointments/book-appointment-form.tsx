@@ -1,7 +1,7 @@
 import { formOptions } from '@tanstack/react-form'
 import { AlertCircle, CalendarClock } from 'lucide-react'
 
-import type { getSpecialists } from '@/lib/specialists.functions'
+import type { getSpecialists } from '@/lib/functions/specialists'
 import type { BookAppointmentFormValues } from '@/schemas/appointments'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'

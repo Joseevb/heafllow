@@ -4,7 +4,7 @@ import {
   getCurrentAccountSummary,
   getUserSettings,
   updateUserSettings,
-} from '@/lib/settings.functions'
+} from '@/lib/functions/settings'
 
 export const getCurrentAccountSummaryQueryOptions = () =>
   queryOptions({

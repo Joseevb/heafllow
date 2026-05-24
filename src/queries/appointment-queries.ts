@@ -7,7 +7,7 @@ import {
   getClientAppointmentHistory,
   getClientUpcomingAppointments,
   getSpecialistBookingAvailability,
-} from '@/lib/appointments.functions'
+} from '@/lib/functions/appointments'
 
 function unwrapServerResult<T>(
   result:

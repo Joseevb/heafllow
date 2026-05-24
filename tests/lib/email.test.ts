@@ -60,9 +60,9 @@ mock.module('@tanstack/react-start', () => ({
   }),
 }))
 
-const { sendEmail } = await import('../../src/lib/email.functions')
+const { sendEmail } = await import('../../src/lib/functions/email')
 
-describe('email.functions', () => {
+describe('email', () => {
   beforeEach(() => {
     sendMock.mockClear()
     sendMock.mockImplementation(async () => ({ data: { id: 'email-123' }, error: null }))

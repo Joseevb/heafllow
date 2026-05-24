@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query'
 
-import { getSpecialistByQuery, getSpecialists } from '@/lib/specialists.functions'
+import { getSpecialistByQuery, getSpecialists } from '@/lib/functions/specialists'
 import { SPECIALTIES } from '@/types/specialties'
 
 function isActiveSpecialist<

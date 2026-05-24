@@ -60,7 +60,7 @@ mock.module('@tanstack/react-start', () => ({
   }),
 }))
 
-mock.module('@/lib/auth.functions', () => ({
+mock.module('@/lib/functions/auth', () => ({
   ensureSessionMiddleware: {},
 }))
 
@@ -83,7 +83,7 @@ const {
   getClientAppointmentHistory,
   createAppointment,
   cancelAppointment,
-} = await import('../../src/lib/appointments.functions')
+} = await import('../../src/lib/functions/appointments')
 
 const mockAppointment = {
   id: 'apt-1',
@@ -100,7 +100,7 @@ const mockAppointment = {
 
 const mockSession = { user: { id: 'client-1' } }
 
-describe('appointments.functions', () => {
+describe('appointments', () => {
   beforeEach(() => {
     selectResults.length = 0
     insertResults.length = 0

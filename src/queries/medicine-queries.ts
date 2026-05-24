@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query'
 
-import { getClientMedicines } from '@/lib/medicines.functions'
+import { getClientMedicines } from '@/lib/functions/medicines'
 
 export const getClientMedicinesQueryOptions = () =>
   queryOptions({

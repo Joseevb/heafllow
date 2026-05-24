@@ -105,9 +105,9 @@ const {
   updateUserById,
   validateAdminUserDeletion,
   validateAdminUserRoleTransition,
-} = await import('../../src/lib/admin.functions')
+} = await import('../../src/lib/functions/admin')
 
-describe('admin.functions', () => {
+describe('admin', () => {
   beforeEach(() => {
     updateWhereMock.mockClear()
     updateSetMock.mockClear()

@@ -5,6 +5,7 @@ import type { BetterAuthUser } from '@/types/auth'
 import type { RoutePath } from '@/types/routes'
 
 import { useTheme } from '@/components/providers/theme-provider'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -40,9 +41,10 @@ export function UserMenu({
                 : 'w-full justify-start gap-3 px-3 py-6 hover:bg-sidebar-accent'
             }
           >
-            <div className="flex size-8 items-center justify-center rounded-full bg-blue-100 text-sm font-medium text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
-              {getInitials(user.name)}
-            </div>
+            <Avatar>
+              <AvatarImage src={user.image ?? undefined} />
+              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+            </Avatar>
             {!compact ? (
               <div className="flex flex-col items-start text-sm">
                 <span className="font-medium">{user.name}</span>

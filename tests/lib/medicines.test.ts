@@ -36,7 +36,7 @@ mock.module('@tanstack/react-start', () => ({
   }),
 }))
 
-mock.module('@/lib/auth.functions', () => ({
+mock.module('@/lib/functions/auth', () => ({
   ensureSessionMiddleware: {},
 }))
 
@@ -44,9 +44,9 @@ mock.module('@/db', () => ({
   db: { select: selectBuilder },
 }))
 
-const { getClientMedicines } = await import('../../src/lib/medicines.functions')
+const { getClientMedicines } = await import('../../src/lib/functions/medicines')
 
-describe('medicines.functions', () => {
+describe('medicines', () => {
   beforeEach(() => {
     selectResults.length = 0
   })

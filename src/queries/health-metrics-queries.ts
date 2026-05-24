@@ -1,8 +1,8 @@
 import { queryOptions } from '@tanstack/react-query'
 
-import type { FromToDates } from '@/lib/health-metrics.functions'
+import type { FromToDates } from '@/lib/functions/health-metrics'
 
-import { getClientMetrics, getRecentClientMetrics } from '@/lib/health-metrics.functions'
+import { getClientMetrics, getRecentClientMetrics } from '@/lib/functions/health-metrics'
 
 export const getClientMetricsQueryOptions = () =>
   queryOptions({

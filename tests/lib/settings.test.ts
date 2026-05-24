@@ -61,7 +61,7 @@ mock.module('@tanstack/react-start', () => ({
   }),
 }))
 
-mock.module('@/lib/auth.functions', () => ({
+mock.module('@/lib/functions/auth', () => ({
   ensureSessionMiddleware: {},
 }))
 
@@ -75,9 +75,9 @@ mock.module('@/db', () => ({
 }))
 
 const { getCurrentAccountSummary, getUserSettings, updateUserSettings } =
-  await import('../../src/lib/settings.functions')
+  await import('../../src/lib/functions/settings')
 
-describe('settings.functions', () => {
+describe('settings', () => {
   const userData = {
     id: 'user-123',
     name: 'John Doe',

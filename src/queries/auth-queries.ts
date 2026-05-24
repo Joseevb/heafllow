@@ -4,13 +4,15 @@ import type { SignIn, SignUp, UserDataInput } from '@/schemas/auth'
 import type { SocialSignOnProvider } from '@/types/auth'
 
 import { signIn } from '@/lib/auth-client'
-import { signUpUser } from '@/lib/auth.functions'
+import { signUpUser } from '@/lib/functions/auth'
 import { createUrl } from '@/lib/utils'
 
 export const signUpMutationOptions = mutationOptions({
   mutationKey: ['sign-up'],
   mutationFn: async ({ value }: { value: SignUp }) => {
-    const result = await signUpUser({ data: { step: 'account', accountData: value } })
+    const result = await signUpUser({
+      data: { step: 'account', accountData: value },
+    })
 
     if (!result.success) throw new Error('Failed to save account data')
   },

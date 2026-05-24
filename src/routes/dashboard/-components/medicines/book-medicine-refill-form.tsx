@@ -1,7 +1,7 @@
 import { formOptions } from '@tanstack/react-form'
 import { AlertCircle, CalendarClock, Pill, Stethoscope } from 'lucide-react'
 
-import type { getSpecialistByQuery } from '@/lib/specialists.functions'
+import type { getSpecialistByQuery } from '@/lib/functions/specialists'
 import type { BookMedicineRefillFormValues } from '@/schemas/medicines'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'

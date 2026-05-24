@@ -21,7 +21,7 @@ mock.module('@tanstack/react-start', () => ({
   }),
 }))
 
-mock.module('@/lib/auth.functions', () => ({
+mock.module('@/lib/functions/auth', () => ({
   ensureSessionMiddleware: {},
 }))
 
@@ -36,7 +36,7 @@ const { users } = await import('../../src/db/schemas/auth')
 const { specialistsData } = await import('../../src/db/schemas/specialists-data')
 
 const { getSpecialistByQuery, getSpecialists, getSpecialistById } =
-  await import('../../src/lib/specialists.functions')
+  await import('../../src/lib/functions/specialists')
 
 function resetTables() {
   sqlite.run('DROP TABLE IF EXISTS specialists_data')
@@ -107,7 +107,7 @@ async function seedSpecialist({
   })
 }
 
-describe('specialists.functions', () => {
+describe('specialists', () => {
   beforeEach(async () => {
     resetTables()
   })

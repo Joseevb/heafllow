@@ -96,13 +96,13 @@ export const SignUpForm = withForm({
         </FieldSet>
 
         <FieldSet>
-          <form.AppField name="profileImage">
+          <form.AppField name="image">
             {(field) => (
               <field.TextField
-                type="file"
+                type="url"
                 label="Profile Image"
-                description="Upload your profile image (optional)"
-                placeholder="profile.jpg"
+                description="Enter your profile image URL (optional)"
+                placeholder="https://example.com/profile.jpg"
               />
             )}
           </form.AppField>

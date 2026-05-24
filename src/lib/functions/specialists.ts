@@ -12,7 +12,7 @@ import { selectUsersSchema } from '@/db/types/auth.zod'
 import { selectSpecialistDataSchema } from '@/db/types/specialists-data.zod'
 import { safeSerialize } from '@/lib/result'
 
-import { ensureSessionMiddleware } from './auth.functions'
+import { ensureSessionMiddleware } from './auth'
 
 const specialistRepository = new SpecialistsDataRepository(db, specialistsData)
 const usersRepository = new UsersRepository(db, users)

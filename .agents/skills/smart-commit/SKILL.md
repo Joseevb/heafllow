@@ -1,12 +1,14 @@
 ---
-name: commit
+name: smart-commit
 description: Analyze changes and create organized commits
 ---
 
 # Analyze the uncommitted changes in the repository.
 
 ## Tasks:
+
 1. Read recent commit history:
+
    ```bash
    git log --oneline --decorate -n 20
    ```

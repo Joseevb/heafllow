@@ -51,7 +51,7 @@ mock.module('@tanstack/react-start', () => ({
   }),
 }))
 
-mock.module('@/lib/auth.functions', () => ({
+mock.module('@/lib/functions/auth', () => ({
   ensureSessionMiddleware: {},
 }))
 
@@ -61,11 +61,11 @@ mock.module('@/db', () => ({
   },
 }))
 
-const { getClientLatestHealthScore } = await import('../../src/lib/health-score.functions')
+const { getClientLatestHealthScore } = await import('../../src/lib/functions/health-score')
 
 const mockSession = { user: { id: 'client-1' } }
 
-describe('health-score.functions', () => {
+describe('health-score', () => {
   beforeEach(() => {
     selectResults.length = 0
   })

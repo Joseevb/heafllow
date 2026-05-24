@@ -17,7 +17,7 @@ import {
   searchExternalMedicines,
   upsertSpecialistAvailability,
   updateSpecialistAppointment,
-} from '@/lib/specialist-dashboard.functions'
+} from '@/lib/functions/specialist-dashboard'
 
 function unwrapServerResult<T>(
   result:

@@ -84,7 +84,7 @@ export const auth = betterAuth({
         const { Result } = await import('better-result')
         const { toast } = await import('sonner')
         const { DeleteUserTemplate } = await import('@/components/email/delete-user-template')
-        const { sendEmail } = await import('@/lib/email.functions')
+        const { sendEmail } = await import('@/lib/functions/email')
 
         const result = Result.deserialize(
           await sendEmail({
@@ -111,7 +111,7 @@ export const auth = betterAuth({
         const { APIError } = await import('better-auth')
         const { Result } = await import('better-result')
         const { toast } = await import('sonner')
-        const { softDeleteUser } = await import('@/lib/auth.functions')
+        const { softDeleteUser } = await import('@/lib/functions/auth')
 
         const serializedResult = await softDeleteUser()
 

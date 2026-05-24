@@ -2,7 +2,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 
-import type { AdminUserListItem } from '@/lib/admin.functions'
+import type { AdminUserListItem } from '@/lib/functions/admin'
 
 import { adminUsersQueryOptions } from '@/queries/admin-queries'
 

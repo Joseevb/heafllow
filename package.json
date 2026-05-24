@@ -22,6 +22,8 @@
     "typecheck": "tsgo"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1053.0",
+    "@aws-sdk/s3-request-presigner": "^3.1053.0",
     "@base-ui/react": "^1.5.0",
     "@better-auth/stripe": "^1.6.9",
     "@faker-js/faker": "^10.3.0",
@@ -54,6 +56,7 @@
     "drizzle-orm": "^0.45.2",
     "drizzle-seed": "^0.3.1",
     "drizzle-zod": "^0.8.3",
+    "effect": "^3.21.2",
     "lucide-react": "^1.16.0",
     "motion": "^12.38.0",
     "nitro": "npm:nitro-nightly@3.0.1-20260501-164602-aee73f19",
