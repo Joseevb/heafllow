@@ -10,7 +10,7 @@
     "db:generate": "bunx --bun drizzle-kit generate",
     "db:migrate": "bun run ./src/db/migrate.ts",
     "db:push": "bunx --bun drizzle-kit push",
-    "db:seed": "bun run src/db/seed.ts admin && bun run src/db/seed.ts specialists",
+    "db:seed": "bun run src/db/seed.ts admin && bun run src/db/seed.ts specialists && bun run src/db/seed.ts basic-specialist",
     "dev": "bunx --bun vite dev --port 3000",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
