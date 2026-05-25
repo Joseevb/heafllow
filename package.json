@@ -18,6 +18,7 @@
     "lint:fix": "oxlint --fix",
     "prebuild": "bun db:generate && bun db:migrate && bun db:seed",
     "preview": "bunx --bun vite preview",
+    "start": "bun .output/server/index.mjs",
     "stripe:webhook": "stripe listen --forward-to localhost:3000/api/auth/stripe/webhook",
     "test": "bun test",
     "tsc": "tsgo",
