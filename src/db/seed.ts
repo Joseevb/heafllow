@@ -27,11 +27,6 @@ if (tableArgs.length === 0) {
   process.exit(1)
 }
 
-if (Bun.env.NODE_ENV === 'production') {
-  console.error('Refusing to seed in production')
-  process.exit(1)
-}
-
 // Custom seeders
 
 async function seedSpecialists() {
