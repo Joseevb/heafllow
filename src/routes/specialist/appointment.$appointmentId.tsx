@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
 import { ArrowLeft, Search } from 'lucide-react'
@@ -35,12 +35,14 @@ export const Route = createFileRoute('/specialist/appointment/$appointmentId')({
       ),
       context.queryClient.ensureQueryData(availableSpecialistsQueryOptions()),
     ])
+
+    return { queryClient: context.queryClient }
   },
 })
 
 function RouteComponent() {
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
+  const { queryClient } = Route.useLoaderData()
   const { startDate, endDate } = useBookingDateRange()
   const { appointmentId } = Route.useParams()
   const { data: appointment } = useSuspenseQuery(

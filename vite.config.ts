@@ -9,6 +9,8 @@ import { basename, extname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
 
+import { env } from '@/env/server'
+
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 function autoBarrel(dirs: Array<string>) {
@@ -58,7 +60,7 @@ export default defineConfig({
     autoBarrel([resolve(__dirname, 'src/db/schemas')]),
     heyApiPlugin({
       config: {
-        input: process.env.MEDICINES_API_URL!,
+        input: env.MEDICINES_API_URL!,
         output: 'src/client',
         plugins: ['@tanstack/react-query'],
       },
