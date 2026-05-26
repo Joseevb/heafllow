@@ -30,7 +30,6 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Validate that project builds
-      - name: Validate that project builds
         run: bunx --bun vite build
         env:
           SKIP_ENV_VALIDATION: 'true'
