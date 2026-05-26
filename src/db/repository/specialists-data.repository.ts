@@ -1,10 +1,11 @@
 import type { getTableColumns } from 'drizzle-orm'
 
+import { Result } from 'better-result'
 import { eq } from 'drizzle-orm'
 
 import type { specialistsData } from '@/db/schemas'
 
-import { BaseRepository } from '@/db/repository/base-repository'
+import { BaseRepository, EntityNotFoundError } from '@/db/repository/base-repository'
 
 export class SpecialistsDataRepository extends BaseRepository<typeof specialistsData> {
   async findAllSpecialistIdsByField(
@@ -17,16 +18,22 @@ export class SpecialistsDataRepository extends BaseRepository<typeof specialists
       .where(eq(this.columns[field] as any, value))
   }
 
-  async findBySpecialistId(
-    specialistId: string,
-  ): Promise<typeof specialistsData.$inferSelect | undefined> {
-    const rows = await this.db
-      .select()
-      .from(this.table)
-      .where(eq(this.columns.specialistId, specialistId))
-      .limit(1)
+  async findBySpecialistId(specialistId: string) {
+    return Result.tryPromise({
+      try: async () => {
+        const rows = await this.db
+          .select()
+          .from(this.table)
+          .where(eq(this.columns.specialistId, specialistId))
+          .limit(1)
 
-    return rows.at(0)
+        if (rows.length < 1)
+          throw new Error(`Could not find specialist data for specialsist ${specialistId}`)
+
+        return rows[0]
+      },
+      catch: () => new EntityNotFoundError({ field: 'specialistId', value: specialistId }),
+    })
   }
 
   async updateBySpecialistId(
@@ -39,6 +46,8 @@ export class SpecialistsDataRepository extends BaseRepository<typeof specialists
       .where(eq(this.columns.specialistId, specialistId))
       .returning()
 
-    return rows.at(0)
+    return rows.length > 0
+      ? Result.ok(rows[0])
+      : Result.err(new EntityNotFoundError({ field: 'specialistId', value: specialistId }))
   }
 }

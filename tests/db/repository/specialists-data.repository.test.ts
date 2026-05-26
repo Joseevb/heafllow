@@ -57,19 +57,19 @@ describe('SpecialistsDataRepository', () => {
 
       const result = await repo.findBySpecialistId('spec1')
 
-      expect(result).toBeDefined()
-      if (result) {
-        expect(result.specialistId).toBe('spec1')
-        expect(result.specialty).toBe('Cardiology')
-        expect(result.licenseNumber).toBe('LIC-001')
-        expect(result.consultationDurationMinutes).toBe(30)
+      expect(result.isOk()).toBe(true)
+      if (result.isOk()) {
+        expect(result.value.specialistId).toBe('spec1')
+        expect(result.value.specialty).toBe('Cardiology')
+        expect(result.value.licenseNumber).toBe('LIC-001')
+        expect(result.value.consultationDurationMinutes).toBe(30)
       }
     })
 
-    test('should return undefined when specialist is not found', async () => {
+    test('should return error when specialist is not found', async () => {
       const result = await repo.findBySpecialistId('non-existent')
 
-      expect(result).toBeUndefined()
+      expect(result.isErr()).toBe(true)
     })
   })
 
@@ -156,21 +156,21 @@ describe('SpecialistsDataRepository', () => {
         specialty: 'Cardiology',
       })
 
-      expect(result).toBeDefined()
-      if (result) {
-        expect(result.specialistId).toBe('spec1')
-        expect(result.consultationDurationMinutes).toBe(60)
-        expect(result.specialty).toBe('Cardiology')
-        expect(result.licenseNumber).toBe('LIC-001')
+      expect(result.isOk()).toBe(true)
+      if (result.isOk()) {
+        expect(result.value.specialistId).toBe('spec1')
+        expect(result.value.consultationDurationMinutes).toBe(60)
+        expect(result.value.specialty).toBe('Cardiology')
+        expect(result.value.licenseNumber).toBe('LIC-001')
       }
     })
 
-    test('should return undefined when specialist does not exist', async () => {
+    test('should return error when specialist does not exist', async () => {
       const result = await repo.updateBySpecialistId('non-existent', {
         consultationDurationMinutes: 60,
       })
 
-      expect(result).toBeUndefined()
+      expect(result.isErr()).toBe(true)
     })
 
     test('should update updatedAt timestamp', async () => {
@@ -192,10 +192,10 @@ describe('SpecialistsDataRepository', () => {
         consultationDurationMinutes: 45,
       })
 
-      expect(result).toBeDefined()
-      if (result) {
-        expect(result.consultationDurationMinutes).toBe(45)
-        expect(result.updatedAt.getTime()).toBeGreaterThan(baseTime.getTime())
+      expect(result.isOk()).toBe(true)
+      if (result.isOk()) {
+        expect(result.value.consultationDurationMinutes).toBe(45)
+        expect(result.value.updatedAt.getTime()).toBeGreaterThan(baseTime.getTime())
       }
     })
 
@@ -217,10 +217,10 @@ describe('SpecialistsDataRepository', () => {
         specialty: 'Neurology',
       })
 
-      expect(result).toBeDefined()
-      if (result) {
-        expect(result.consultationDurationMinutes).toBe(50)
-        expect(result.specialty).toBe('Neurology')
+      expect(result.isOk()).toBe(true)
+      if (result.isOk()) {
+        expect(result.value.consultationDurationMinutes).toBe(50)
+        expect(result.value.specialty).toBe('Neurology')
       }
     })
   })
