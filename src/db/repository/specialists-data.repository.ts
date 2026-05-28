@@ -19,21 +19,15 @@ export class SpecialistsDataRepository extends BaseRepository<typeof specialists
   }
 
   async findBySpecialistId(specialistId: string) {
-    return Result.tryPromise({
-      try: async () => {
-        const rows = await this.db
-          .select()
-          .from(this.table)
-          .where(eq(this.columns.specialistId, specialistId))
-          .limit(1)
+    const rows = await this.db
+      .select()
+      .from(this.table)
+      .where(eq(this.columns.specialistId, specialistId))
+      .limit(1)
 
-        if (rows.length < 1)
-          throw new Error(`Could not find specialist data for specialsist ${specialistId}`)
-
-        return rows[0]
-      },
-      catch: () => new EntityNotFoundError({ field: 'specialistId', value: specialistId }),
-    })
+    return rows.length < 1
+      ? new EntityNotFoundError({ field: 'specialistId', value: specialistId })
+      : rows[0]
   }
 
   async updateBySpecialistId(

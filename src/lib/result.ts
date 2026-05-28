@@ -47,11 +47,13 @@ export function collectResults<T, E>(results: Array<Result<T, E>>): Result<Array
  * Ensures an array is non-empty, returning Ok with the array or an Err with a message.
  *
  * @param items - The array to check
+ * @param error - the error with the message, optional
  * @returns Ok(items) if non-empty, otherwise Err with a descriptive message
  */
-export const ensureNonEmpty = <T>(items: Array<T>): Result<Array<T>, { message: string }> =>
-  items.length > 0
-    ? Result.ok(items)
-    : Result.err({
-        message: 'No availability slots could be created for this range',
-      })
+
+export function ensureNonEmpty<T>(
+  items: Array<T>,
+  error: { message: string } = { message: 'Expected at least one item.' },
+): Result<Array<T>, { message: string }> {
+  return items.length > 0 ? Result.ok(items) : Result.err(error)
+}
