@@ -25,9 +25,9 @@ export class SpecialistsDataRepository extends BaseRepository<typeof specialists
       .where(eq(this.columns.specialistId, specialistId))
       .limit(1)
 
-    return rows.length < 1
-      ? new EntityNotFoundError({ field: 'specialistId', value: specialistId })
-      : rows[0]
+    return rows.length > 0
+      ? Result.ok(rows[0])
+      : Result.err(new EntityNotFoundError({ field: 'specialistId', value: specialistId }))
   }
 
   async updateBySpecialistId(
