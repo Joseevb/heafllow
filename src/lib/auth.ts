@@ -11,7 +11,7 @@ import { env } from '@/env/server'
 import { ac, admin, client, specialist } from '@/lib/permissions'
 
 const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-04-22.dahlia',
+  apiVersion: '2026-05-27.dahlia',
 })
 
 export const auth = betterAuth({
