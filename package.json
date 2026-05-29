@@ -8,7 +8,7 @@
     "check": "oxfmt && oxlint --fix",
     "cn:add": "bunx --bun shadcn@latest add",
     "db:generate": "bunx --bun drizzle-kit generate",
-    "db:migrate": "bun run ./src/db/migrate.ts",
+    "db:migrate": "bun run src/db/migrate.ts",
     "db:push": "bunx --bun drizzle-kit push",
     "db:seed": "bun run src/db/seed.ts admin && bun run src/db/seed.ts specialists && bun run src/db/seed.ts basic-specialist",
     "dev": "bunx --bun vite dev --port 3000",
