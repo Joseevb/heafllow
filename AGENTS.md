@@ -82,27 +82,6 @@ tests/               Mirrors src layout
 - **Test env**: `src/test/setup.ts` preload sets env vars; DB uses `:memory:` SQLite
 - DB repository tests create fresh in-memory tables per `beforeEach`
 - Tests live in `tests/` directory mirroring `src/`
-- **Test groups**: Tests are split into 4 groups because Bun's `mock.module` is process-global and path-normalized — mocking a module specifier (e.g. `@/db/repository/...`) affects ALL imports of that module, even via relative paths. This prevents concurrent execution of files that mock different modules.
-
-### Test groups
-
-| Command                    | Files                                                                   | Tests                   |
-| -------------------------- | ----------------------------------------------------------------------- | ----------------------- |
-| `bun run test:repo`        | `tests/db/repository/`                                                  | 170 repo + schema tests |
-| `bun run test:auth`        | `tests/lib/auth.functions.test.ts`, `tests/lib/admin.functions.test.ts` | 21 auth/admin tests     |
-| `bun run test:lib`         | All other lib + session                                                 | 79 lib/session tests    |
-| `bun run test:specialists` | `tests/lib/specialists.functions.test.ts`                               | 10 specialists tests    |
-
-Total: **280 tests, 0 failures, 538 expect() calls across 24 files**.
-
-### Mock isolation
-
-`mock.module` in Bun v1.3 uses **path-normalized matching**: once mocked, importing the same module via any specifier (`@/foo/bar` or `../../src/foo/bar`) returns the mock. This means test files in the same process must all agree on which modules are mocked. The 4 groups above partition files with incompatible mock regimes:
-
-- **`test:repo`**: No `mock.module` calls — real in-memory SQLite
-- **`test:auth`**: Uses real `auth.functions.ts` (no mock for `@/lib/auth.functions`), plus mocks for `@/db`, `@/lib/auth`, etc.
-- **`test:lib`**: All remaining lib tests mock `@/lib/auth.functions` with a lightweight stub and `@/db` with a functional chain
-- **`test:specialists`**: Standalone because `appointments.functions.test.ts` mocks `@/lib/specialists.functions` which pollutes the specialists test's import
 
 ## Generated / ignored files
 

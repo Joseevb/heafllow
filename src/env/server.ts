@@ -21,7 +21,7 @@ export const env = createEnv({
     STRIPE_MONTHLY_PRICE_ID: z.string().nonempty().nonoptional(),
     STRIPE_YEARLY_PRICE_ID: z.string().nonempty().nonoptional(),
 
-    SESSION_SECRET: z.string().min(32).nonempty().nonoptional().default(crypto.randomUUID()),
+    SESSION_SECRET: z.string().min(32).nonempty().nonoptional(),
 
     NODE_ENV: z.enum(['development', 'production']).nonoptional().default('development'),
   },
