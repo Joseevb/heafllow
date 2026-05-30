@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { SidebarItems } from '@/components/app-sidebar'
 
 import { AppSidebar } from '@/components/app-sidebar'
+import { ContentHeader } from '@/components/content-header'
 import { SidebarInset, SidebarProvider, useSidebar } from '@/components/ui/sidebar'
 import { UserMenu } from '@/components/user-menu'
 import { getSession } from '@/lib/functions/auth'
@@ -66,16 +67,19 @@ function AdminLayout({ user }: { user: ReturnType<typeof Route.useRouteContext>[
   return (
     <div className="flex min-h-screen w-full">
       <AppSidebar
-        renderTrigger={true}
         baseUrl="/admin"
         items={sidebarItems}
         footer={<UserMenu user={user} compact={isUserMenuCompact} settingsPath="/admin" />}
         handleTransitionEnd={handleSidebarTransitionEnd}
       />
 
-      <SidebarInset className="bg-card p-4 pl-0">
-        <div className="m-2 ml-0 rounded-2xl bg-background p-6">
-          <Outlet />
+      <SidebarInset className="bg-card">
+        <ContentHeader />
+
+        <div className="flex-1 p-4 pl-0 max-md:p-3">
+          <div className="h-full rounded-2xl bg-background p-6 max-md:rounded-none max-md:p-4">
+            <Outlet />
+          </div>
         </div>
       </SidebarInset>
     </div>

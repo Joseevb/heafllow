@@ -26,7 +26,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
@@ -124,7 +123,6 @@ function CollapsibleItem({ item }: { item: SidebarItemCollapsible }) {
 }
 
 interface AppSidebarProps {
-  renderTrigger: boolean
   baseUrl: RoutePath
   footer?: ReactNode
   items: (baseUrl: RoutePath) => ReadonlyArray<SidebarItem>
@@ -132,7 +130,6 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({
-  renderTrigger,
   baseUrl,
   footer,
   items,
@@ -149,11 +146,6 @@ export function AppSidebar({
           <SidebarGroupLabel>HealFlow</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {renderTrigger && (
-                <SidebarMenuItem>
-                  <SidebarTrigger />
-                </SidebarMenuItem>
-              )}
               {items(baseUrl).map((item) =>
                 item.collapsible ? (
                   <CollapsibleItem key={item.title} item={item} />
