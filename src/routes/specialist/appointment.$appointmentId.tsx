@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useStore } from '@tanstack/react-store'
+import { useSelector } from '@tanstack/react-store'
 import { ArrowLeft, Search } from 'lucide-react'
 import { useDeferredValue, useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -27,21 +27,18 @@ import { availableSpecialistsQueryOptions } from '@/queries/specialist-queries'
 
 export const Route = createFileRoute('/specialist/appointment/$appointmentId')({
   component: RouteComponent,
-  loader: async ({ context, params }) => {
+  loader: async ({ context, params }) =>
     await Promise.all([
       context.queryClient.ensureQueryData(
         specialistAppointmentDetailQueryOptions(params.appointmentId),
       ),
       context.queryClient.ensureQueryData(availableSpecialistsQueryOptions()),
-    ])
-
-    return { queryClient: context.queryClient }
-  },
+    ]),
 })
 
 function RouteComponent() {
   const navigate = useNavigate()
-  const { queryClient } = Route.useLoaderData()
+  const queryClient = useQueryClient()
   const { startDate, endDate } = useBookingDateRange()
   const { appointmentId } = Route.useParams()
   const { data: appointment } = useSuspenseQuery(
@@ -74,15 +71,15 @@ function RouteComponent() {
     },
   })
 
-  const shouldScheduleFollowUp = useStore(
+  const shouldScheduleFollowUp = useSelector(
     form.store,
     (state) => state.values.scheduleFollowUp === 'true',
   )
-  const followUpSpecialistId = useStore(
+  const followUpSpecialistId = useSelector(
     form.store,
     (state) => state.values.followUp?.specialistId ?? '',
   )
-  const followUpAppointmentDate = useStore(
+  const followUpAppointmentDate = useSelector(
     form.store,
     (state) => state.values.followUp?.appointmentDate ?? '',
   )
