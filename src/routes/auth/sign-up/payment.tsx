@@ -86,7 +86,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="mx-auto flex h-screen w-screen max-w-4xl flex-col items-center justify-center gap-6">
+    <div className="mx-auto flex min-h-screen w-screen max-w-4xl flex-col items-center justify-center gap-6 px-4 pt-16">
       <div className="space-y-2 text-center">
         <h1 className="text-2xl font-bold tracking-tight">Choose your plan</h1>
         <p className="text-muted-foreground">

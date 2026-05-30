@@ -20,12 +20,7 @@ import { DAYS } from '@/types/date'
 import { HealthMetricType } from '@/types/health-metrics'
 import { SPECIALTIES } from '@/types/specialties'
 
-const tableArgs = Bun.argv.slice(2)
-
-if (tableArgs.length === 0) {
-  console.error('Usage: bun run src/db/seed.ts <table1> <table2> ...')
-  process.exit(1)
-}
+const tableArgs = Bun.argv.slice(2).length > 0 ? Bun.argv.slice(2) : ['admin', 'specialists', 'basic-specialist']
 
 // Custom seeders
 
@@ -385,6 +380,23 @@ async function seedBasicSpecialist() {
   const existingUser = await db.select().from(users).where(eq(users.email, 'spe@test.com'))
 
   if (existingUser.length > 0) {
+    console.log('User already exists, ensuring specialist data row...')
+    const existingData = await db
+      .select()
+      .from(specialistsData)
+      .where(eq(specialistsData.specialistId, existingUser[0].id))
+      .limit(1)
+
+    if (existingData.length === 0) {
+      await db.insert(specialistsData).values({
+        consultationDurationMinutes: 30,
+        licenseNumber: 'TEST123456',
+        specialistId: existingUser[0].id,
+        specialty: 'Primary Care',
+      })
+      console.log('Specialist data row re-created.')
+    }
+
     console.log({ ...existingUser[0] })
     return
   }

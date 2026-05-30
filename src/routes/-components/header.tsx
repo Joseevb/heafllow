@@ -14,7 +14,7 @@ import { UserIcon } from '@/components/ui/user'
 
 export function Header() {
   return (
-    <header className="fixed z-50 flex w-full flex-row justify-between bg-linear-to-br from-slate-100/90 via-blue-50/90 to-green-50/90 p-6 dark:from-slate-900/90 dark:via-blue-950/90 dark:to-green-950/75">
+    <header className="fixed z-50 flex w-full flex-row justify-between bg-linear-to-br from-slate-100/90 via-blue-50/90 to-green-50/90 px-4 py-3 sm:p-6 dark:from-slate-900/90 dark:via-blue-950/90 dark:to-green-950/75">
       <div>
         <Link to="/">
           <Image src={'/logo220.png'} alt="logo" width={40} height={40} />
