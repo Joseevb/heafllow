@@ -15,9 +15,6 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Upgrade Bun
-        run: bun upgrade --canary
-
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
@@ -33,3 +30,4 @@ jobs:
         run: bunx --bun vite build
         env:
           SKIP_ENV_VALIDATION: 'true'
+          MEDICINES_API_URL: ${{ vars.MEDICINES_API_URL }}

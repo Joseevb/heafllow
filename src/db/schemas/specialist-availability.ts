@@ -32,6 +32,6 @@ export const specialistAvailability = sqliteTable(
   }),
   (t) => [
     index('specialist_availability_specialist_id_idx').on(t.specialistId),
-    unique('uk_specialist_day_time').on(t.dayOfWeek, t.startTime, t.endTime),
+    unique('uk_specialist_day_time').on(t.specialistId, t.dayOfWeek, t.startTime, t.endTime),
   ],
 )

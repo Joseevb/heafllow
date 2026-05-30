@@ -1,10 +1,12 @@
+import type { Plugin } from 'vite'
+
+import { heyApiPlugin } from '@hey-api/vite-plugin'
 import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
-/// <reference types="bun-types" />
 import { basename, extname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
@@ -45,7 +47,7 @@ export default defineConfig({
     nitro({
       preset: 'bun',
       rollupConfig: {
-        external: [/^@sentry\//],
+        external: ['kysely'],
       },
     }),
     tailwindcss(),
@@ -56,5 +58,12 @@ export default defineConfig({
       presets: [reactCompilerPreset()],
     }),
     autoBarrel([resolve(__dirname, 'src/db/schemas')]),
+    heyApiPlugin({
+      config: {
+        input: process.env.MEDICINES_API_URL!,
+        output: 'src/client',
+        plugins: ['@tanstack/react-query'],
+      },
+    }),
   ],
 })

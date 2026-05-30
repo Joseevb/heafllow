@@ -5,6 +5,7 @@ import * as z from 'zod'
 
 import { db } from '@/db'
 import { AppointmentsRepository } from '@/db/repository/appoinments.repository'
+import { EntityNotFoundError } from '@/db/repository/base-repository'
 import { ClientMedicinesRepository } from '@/db/repository/client-medicines.repository'
 import { ClientsRepository } from '@/db/repository/clients-repository'
 import { HealthMetricRepository } from '@/db/repository/health-metric.repository'
@@ -23,7 +24,7 @@ import {
   users,
 } from '@/db/schemas'
 import { ensureSessionMiddleware } from '@/lib/functions/auth'
-import { safeSerialize } from '@/lib/result'
+import { collectResults, ensureNonEmpty, safeSerialize } from '@/lib/result'
 import {
   specialistAppointmentUpdateSchema,
   specialistAvailabilityFormSchema,
@@ -108,69 +109,101 @@ export const getSpecialistAvailability = createServerFn()
       specialistsDataRepository.findBySpecialistId(session.user.id),
     ])
 
-    if (!specialistProfile) {
-      throw new Error('Specialist profile not found.')
-    }
+    const profile = Result.match(specialistProfile, {
+      ok: (value) => value,
+      err: () => {
+        throw new Error('Specialist profile not found.')
+      },
+    })
 
     return {
       availability,
-      consultationDurationMinutes: specialistProfile.consultationDurationMinutes,
+      consultationDurationMinutes: profile.consultationDurationMinutes,
     }
   })
 
 export const upsertSpecialistAvailability = createServerFn({ method: 'POST' })
   .inputValidator(specialistAvailabilityFormSchema)
   .middleware([ensureSessionMiddleware])
-  .handler(async ({ data, context: { session } }) =>
-    Result.tryPromise(async () => {
-      const intervalMinutes = data.intervalMinutes
-      const specialistProfile = await specialistsDataRepository.findBySpecialistId(session.user.id)
+  .handler(async ({ data, context: { session } }) => {
+    const user = session.user
 
-      if (!specialistProfile) {
-        throw new Error('Specialist profile not found.')
-      }
-
-      await specialistAvailabilityRepository.deleteBySpecialistIdAndDayOfWeek(
-        session.user.id,
-        data.dayOfWeek,
+    const result = await Result.gen(async function* () {
+      const specialistProfile = yield* Result.mapError(
+        await specialistsDataRepository.findBySpecialistId(user.id),
+        () => ({
+          message: 'Specialist profile not found.',
+        }),
       )
 
-      const slots = buildAvailabilitySlots({
-        dayOfWeek: data.dayOfWeek,
-        startTime: data.startTime,
-        endTime: data.endTime,
-        intervalMinutes,
-        isAvailable: data.isAvailable === 'true',
-        specialistId: session.user.id,
+      yield* await Result.tryPromise({
+        try: async () => {
+          await specialistAvailabilityRepository.deleteBySpecialistIdAndDayOfWeek(
+            user.id,
+            data.dayOfWeek,
+          )
+        },
+        catch: (cause) => ({
+          message:
+            cause instanceof Error
+              ? cause.message
+              : 'Failed to replace specialist availability for this day.',
+        }),
       })
 
-      if (slots.length === 0) {
-        throw new Error('No availability slots could be created for this range.')
-      }
-
-      const savedSlots = await Promise.all(
-        slots.map(
-          async (slot) =>
-            await specialistAvailabilityRepository.save(slot).then((result) =>
-              result.match({
-                ok: (value) => value,
-                err: (error) => {
-                  throw new Error(error.message)
-                },
-              }),
-            ),
-        ),
+      const slots = yield* ensureNonEmpty(
+        buildAvailabilitySlots({
+          dayOfWeek: data.dayOfWeek,
+          startTime: data.startTime,
+          endTime: data.endTime,
+          intervalMinutes: data.intervalMinutes,
+          isAvailable: data.isAvailable === 'true',
+          specialistId: user.id,
+        }),
       )
 
-      if (specialistProfile.consultationDurationMinutes !== intervalMinutes) {
-        await specialistsDataRepository.updateBySpecialistId(session.user.id, {
-          consultationDurationMinutes: intervalMinutes,
+      const saveResults = await Promise.all(
+        slots.map((slot) => specialistAvailabilityRepository.save(slot)),
+      )
+
+      const savedSlots = yield* collectResults(saveResults).mapError((error) => ({
+        message: error.message,
+        cause: error.cause,
+      }))
+
+      if (specialistProfile.consultationDurationMinutes !== data.intervalMinutes) {
+        const updateResult = await specialistsDataRepository.updateBySpecialistId(user.id, {
+          consultationDurationMinutes: data.intervalMinutes,
         })
+
+        if (updateResult.isErr()) {
+          const error = updateResult.error
+
+          return yield* Result.err({
+            message:
+              error instanceof EntityNotFoundError
+                ? 'Specialist profile not found.'
+                : 'Failed to update specialist consultation duration.',
+            cause: 'cause' in error ? error.cause : undefined,
+          })
+        }
       }
 
-      return savedSlots
-    }).then(safeSerialize),
-  )
+      return Result.ok(savedSlots)
+    })
+
+    const loggedResult = result.mapError((error) => {
+      console.error('Failed to upsert specialist availability', {
+        error,
+        userId: user.id,
+        dayOfWeek: data.dayOfWeek,
+      })
+
+      return error
+    })
+
+    return safeSerialize(loggedResult)
+  })
 
 export const deleteSpecialistAvailability = createServerFn({ method: 'POST' })
   .inputValidator(z.string().trim().min(1))
@@ -302,7 +335,7 @@ export const completeSpecialistAppointment = createServerFn({ method: 'POST' })
           data.followUp.specialistId,
         )
 
-        if (!targetSpecialist || !targetSpecialistProfile) {
+        if (!targetSpecialist || targetSpecialistProfile.isErr()) {
           throw new Error('Follow-up specialist not found.')
         }
 
@@ -310,7 +343,7 @@ export const completeSpecialistAppointment = createServerFn({ method: 'POST' })
           clientId: appointment.clientId,
           specialistId: data.followUp.specialistId,
           appointmentDate: new Date(data.followUp.appointmentDate),
-          durationMinutes: targetSpecialistProfile.consultationDurationMinutes,
+          durationMinutes: targetSpecialistProfile.value.consultationDurationMinutes,
           notes: data.followUp.notes,
         })
 

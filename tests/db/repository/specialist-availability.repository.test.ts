@@ -27,7 +27,12 @@ describe('SpecialistAvailabilityRepository', () => {
         is_available INTEGER NOT NULL,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL,
-        CONSTRAINT uk_specialist_day_time UNIQUE (day_of_week, start_time, end_time)
+        CONSTRAINT uk_specialist_day_time UNIQUE (
+          specialist_id,
+          day_of_week,
+          start_time,
+          end_time
+        )
       )
     `)
 

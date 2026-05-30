@@ -235,7 +235,7 @@ async function getRoleTransitionValidation({
     }
   }
 
-  if (role === 'specialist' && !specialistProfile) {
+  if (role === 'specialist' && specialistProfile.isErr()) {
     return {
       allowed: false,
       message:

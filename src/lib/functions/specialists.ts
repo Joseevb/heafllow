@@ -74,10 +74,10 @@ export const getSpecialistByQuery = createServerFn()
     )
 
     return specialistDataNested
-      .filter(({ specialistData }) => specialistData)
+      .filter(({ specialistData }) => specialistData.isOk())
       .map(({ user, specialistData }) => ({
         ...user,
-        specialistData,
+        specialistData: specialistData.unwrap(),
       }))
   })
 
@@ -92,10 +92,10 @@ export const getSpecialists = createServerFn().handler(async () => {
   )
 
   return specialistDataNested
-    .filter(({ specialistData }) => specialistData)
+    .filter(({ specialistData }) => specialistData.isOk())
     .map(({ user, specialistData }) => ({
       ...user,
-      specialistData,
+      specialistData: specialistData.unwrap(),
     }))
 })
 
@@ -116,19 +116,11 @@ export const getSpecialistById = createServerFn()
         cause instanceof EntityNotFoundError ? cause : createSpecialistNotFoundError(specialistId),
     })
 
-    const specialistDataResult = await Result.tryPromise({
-      try: async () => {
-        const specialist = await specialistRepository.findBySpecialistId(specialistId)
-
-        if (!specialist) {
-          throw createSpecialistNotFoundError(specialistId)
-        }
-
-        return specialist
-      },
-      catch: (cause) =>
+    const specialistDataResult = Result.mapError(
+      await specialistRepository.findBySpecialistId(specialistId),
+      (cause) =>
         cause instanceof EntityNotFoundError ? cause : createSpecialistNotFoundError(specialistId),
-    })
+    )
 
     return Result.gen(async function* () {
       const user = yield* userResult

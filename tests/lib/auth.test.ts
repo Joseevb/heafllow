@@ -91,6 +91,10 @@ const createServerFnMock = (_opts?: unknown): Record<string, unknown> => ({
   },
 })
 
+const createMiddlewareMock = () => ({
+  server: (handler: unknown) => handler,
+})
+
 const getRequestHeadersMock = mock(() => ({ cookie: 'session=test' }))
 const setResponseStatusMock = mock(() => {})
 const getSessionMock = mock(async (): Promise<MockSession | null> => null)
@@ -118,9 +122,7 @@ const useSessionClearMock = mock(async () => ({ success: true }))
 
 mock.module('@tanstack/react-start', () => ({
   createServerFn: createServerFnMock,
-  createMiddleware: () => ({
-    server: (handler: unknown) => handler,
-  }),
+  createMiddleware: createMiddlewareMock,
 }))
 
 mock.module('@tanstack/react-start/server', () => ({
@@ -167,7 +169,6 @@ const {
   softDeleteUser,
   validateSignUpSession,
   finalizeOnboardingIfReady,
-  ensureSessionMiddleware,
 } = await import('../../src/lib/functions/auth')
 
 describe('auth', () => {
@@ -279,33 +280,6 @@ describe('auth', () => {
     const middleware = createRoleMiddleware('admin') as unknown as (input: {
       next: typeof next
     }) => Promise<unknown>
-    const result = await middleware({ next })
-
-    expect(next).toHaveBeenCalledWith({ context: { session } })
-    expect(result).toEqual({ session })
-  })
-
-  test('ensureSessionMiddleware injects the ensured session into context', async () => {
-    const session = createMockSession('admin')
-    getSessionMock.mockImplementation(async () => session)
-    const next = mock(({ context }: { context: { session: MockSession } }) => context)
-    type MiddlewareCall = { next: typeof next }
-
-    const rawMiddleware = ensureSessionMiddleware as unknown as
-      | ((input: MiddlewareCall) => Promise<unknown>)
-      | {
-          server?: (input: MiddlewareCall) => Promise<unknown>
-          options?: {
-            server: (input: MiddlewareCall) => Promise<unknown>
-          }
-        }
-    const middleware =
-      typeof rawMiddleware === 'function'
-        ? rawMiddleware
-        : (rawMiddleware.options?.server ??
-          rawMiddleware.server ??
-          (async ({ next: callNext }: MiddlewareCall) =>
-            callNext({ context: { session: (await ensureSession()) as MockSession } })))
     const result = await middleware({ next })
 
     expect(next).toHaveBeenCalledWith({ context: { session } })

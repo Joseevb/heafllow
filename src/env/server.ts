@@ -24,6 +24,8 @@ export const env = createEnv({
     SESSION_SECRET: z.string().min(32).nonempty().nonoptional(),
 
     NODE_ENV: z.enum(['development', 'production']).nonoptional().default('development'),
+
+    MEDICINES_API_URL: z.url().nonempty().nonoptional(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

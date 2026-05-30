@@ -28,19 +28,20 @@ function unwrapServerResult<T>(
 ) {
   const parsedResult = Result.deserialize(result)
 
-  return parsedResult.match({
-    ok: (value) => value as T,
-    err: (error) => {
-      throw new Error(
-        typeof error === 'object' &&
-          error &&
-          'message' in error &&
-          typeof error.message === 'string'
-          ? error.message
-          : 'Request failed',
-      )
-    },
-  })
+  if (Result.isOk(parsedResult)) {
+    return parsedResult.value as T
+  }
+
+  const error = parsedResult.error
+  const message =
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof error.message === 'string'
+      ? error.message
+      : 'Request failed'
+
+  throw new Error(message)
 }
 
 export const specialistOverviewQueryOptions = () =>

@@ -1,37 +1,20 @@
 import { formOptions } from '@tanstack/react-form'
-import { AlertCircle, CalendarClock } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 
+import type { BookingDay } from '@/components/availability-picker'
 import type { getSpecialists } from '@/lib/functions/specialists'
 import type { BookAppointmentFormValues } from '@/schemas/appointments'
 
+import { AvailabilityPicker } from '@/components/availability-picker'
+import { SpecialistSummaryCard } from '@/components/specialist-summary-card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { FieldGroup } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
 import { withForm } from '@/hooks/form'
 import { bookAppointmentSchema } from '@/schemas/appointments'
 
 type AvailableSpecialist = Awaited<ReturnType<typeof getSpecialists>>[number]
-
-type BookingDay = {
-  date: string
-  slots: Array<{ startsAt: string; label: string; status: 'available' | 'booked' }>
-}
-
-function getDayKey(date: Date) {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
-}
-
-function parseDayKey(dayKey: string) {
-  const [year, month, day] = dayKey.split('-').map(Number)
-
-  return new Date(year, month - 1, day)
-}
 
 function QueryStateAlert({
   title,
@@ -84,6 +67,8 @@ export const formOpts = formOptions({
 export const BookAppointmentForm = withForm({
   ...formOpts,
   props: {
+    formId: undefined as string | undefined,
+    hideSubmitActions: false,
     specialists: [] as Array<AvailableSpecialist>,
     isSpecialistsPending: false,
     isSpecialistsError: false,
@@ -99,6 +84,8 @@ export const BookAppointmentForm = withForm({
   },
   render: ({
     form,
+    formId,
+    hideSubmitActions,
     specialists,
     isSpecialistsPending,
     isSpecialistsError,
@@ -113,6 +100,7 @@ export const BookAppointmentForm = withForm({
     submitErrorMessage,
   }) => (
     <form
+      id={formId}
       className="space-y-6"
       onSubmit={(event) => {
         event.preventDefault()
@@ -165,166 +153,100 @@ export const BookAppointmentForm = withForm({
           })}
         >
           {({ specialistId, selectedDate, appointmentDate, isSubmitting }) => {
-            const selectedDay = selectedDate
-              ? bookingDays.find((day) => day.date === selectedDate)
-              : undefined
-
-            const availableDateKeys = new Set(
-              bookingDays
-                .filter((day) => day.slots.some((slot) => slot.status === 'available'))
-                .map((day) => day.date),
-            )
-
-            const availableSlots =
-              selectedDay?.slots.filter((slot) => slot.status === 'available') ?? []
-
             if (!specialistId) {
               return null
             }
 
+            const selectedSpecialist = specialists.find(
+              (specialist) => specialist.id === specialistId,
+            )
+
             return (
-              <div className="grid gap-6 xl:grid-cols-[minmax(22rem,1.45fr)_minmax(18rem,1fr)]">
+              <div className="space-y-4">
+                {selectedSpecialist ? (
+                  <SpecialistSummaryCard
+                    name={selectedSpecialist.name}
+                    specialty={selectedSpecialist.specialistData?.specialty}
+                    email={selectedSpecialist.email}
+                    consultationDurationMinutes={
+                      selectedSpecialist.specialistData?.consultationDurationMinutes
+                    }
+                  />
+                ) : null}
+
                 <form.AppField name="selectedDate">
-                  {(selectedDateField) => {
-                    const isInvalid =
-                      selectedDateField.state.meta.isTouched &&
-                      !selectedDateField.state.meta.isValid
+                  {(selectedDateField) => (
+                    <form.AppField name="appointmentDate">
+                      {(appointmentDateField) => {
+                        const isDateInvalid =
+                          selectedDateField.state.meta.isTouched &&
+                          !selectedDateField.state.meta.isValid
+                        const isSlotInvalid =
+                          appointmentDateField.state.meta.isTouched &&
+                          !appointmentDateField.state.meta.isValid
 
-                    return (
-                      <Field
-                        className="min-w-0 space-y-4 rounded-xl border border-border/60 bg-card/70 p-4 xl:min-w-[24rem]"
-                        data-invalid={isInvalid}
-                      >
-                        <div className="space-y-1">
-                          <FieldLabel htmlFor={selectedDateField.name}>Select a day</FieldLabel>
-                          <FieldDescription>
-                            Only days with available slots can be selected.
-                          </FieldDescription>
-                        </div>
-
-                        {isAvailabilityPending ? (
-                          <LoadingState message="Loading specialist availability..." />
-                        ) : isAvailabilityError ? (
-                          <QueryStateAlert
-                            title="Unable to load availability"
-                            message={availabilityErrorMessage || 'Please try again.'}
-                            actionLabel="Retry"
-                            onAction={onRetryAvailability}
-                          />
-                        ) : bookingDays.length === 0 ? (
-                          <Alert>
-                            <AlertCircle className="size-4" />
-                            <AlertTitle>No availability in this range</AlertTitle>
-                            <AlertDescription>
-                              This specialist has no open slots in the next 30 days.
-                            </AlertDescription>
-                          </Alert>
-                        ) : (
-                          <Calendar
-                            mode="single"
-                            selected={selectedDate ? parseDayKey(selectedDate) : undefined}
-                            onSelect={(date) => {
-                              selectedDateField.handleChange(date ? getDayKey(date) : '')
+                        return (
+                          <AvailabilityPicker
+                            bookingDays={bookingDays}
+                            selectedDate={selectedDate}
+                            selectedSlot={appointmentDate}
+                            onDateChange={(value) => {
+                              selectedDateField.handleChange(value)
                               form.setFieldValue('appointmentDate', '')
                             }}
-                            disabled={(date) => !availableDateKeys.has(getDayKey(date))}
-                            className="w-full rounded-xl border border-border/60 bg-background/80"
+                            onSlotChange={appointmentDateField.handleChange}
+                            isPending={isAvailabilityPending}
+                            isError={isAvailabilityError}
+                            errorMessage={availabilityErrorMessage}
+                            onRetry={onRetryAvailability}
+                            isSubmitting={isSubmitting}
+                            loadingMessage="Loading specialist availability..."
+                            emptyMessage="This specialist has no open slots in the next 30 days."
+                            timesDescription="Select one slot and add any notes for your specialist."
+                            noDayMessage="Pick an available day to see bookable appointment slots."
+                            dateErrors={selectedDateField.state.meta.errors}
+                            slotErrors={appointmentDateField.state.meta.errors}
+                            showDateError={isDateInvalid}
+                            showSlotError={isSlotInvalid}
+                            slotPanelFooter={
+                              <>
+                                <form.AppField name="notes">
+                                  {(field) => (
+                                    <field.TextArea
+                                      label="Notes"
+                                      placeholder="Add any context or special requests for your appointment."
+                                    />
+                                  )}
+                                </form.AppField>
+
+                                {submitErrorMessage ? (
+                                  <QueryStateAlert
+                                    title="Unable to book appointment"
+                                    message={submitErrorMessage}
+                                  />
+                                ) : null}
+
+                                {hideSubmitActions ? null : (
+                                  <form.AppForm>
+                                    <div className="flex justify-end">
+                                      <Button
+                                        type="submit"
+                                        disabled={!specialistId || !appointmentDate || isSubmitting}
+                                      >
+                                        {isSubmitting ? <Spinner /> : null}
+                                        Confirm Appointment
+                                      </Button>
+                                    </div>
+                                  </form.AppForm>
+                                )}
+                              </>
+                            }
                           />
-                        )}
-
-                        {isInvalid && <FieldError errors={selectedDateField.state.meta.errors} />}
-                      </Field>
-                    )
-                  }}
+                        )
+                      }}
+                    </form.AppField>
+                  )}
                 </form.AppField>
-
-                <div className="grid content-start gap-4 rounded-xl border border-border/60 bg-card/70 p-4">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">Available times</p>
-                    <p className="text-sm text-muted-foreground">
-                      Select one slot and add any notes for your specialist.
-                    </p>
-                  </div>
-
-                  <form.AppField name="appointmentDate">
-                    {(appointmentDateField) => {
-                      const isInvalid =
-                        appointmentDateField.state.meta.isTouched &&
-                        !appointmentDateField.state.meta.isValid
-
-                      return (
-                        <Field data-invalid={isInvalid}>
-                          {selectedDate && availableSlots.length > 0 ? (
-                            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                              {availableSlots.map((slot) => (
-                                <Button
-                                  key={slot.startsAt}
-                                  type="button"
-                                  variant={
-                                    appointmentDate === slot.startsAt ? 'default' : 'outline'
-                                  }
-                                  onClick={() => appointmentDateField.handleChange(slot.startsAt)}
-                                  disabled={isSubmitting}
-                                >
-                                  <CalendarClock className="size-4" />
-                                  {slot.label}
-                                </Button>
-                              ))}
-                            </div>
-                          ) : selectedDate ? (
-                            <Alert>
-                              <AlertCircle className="size-4" />
-                              <AlertTitle>No slots on this day</AlertTitle>
-                              <AlertDescription>
-                                Please choose another available day to continue.
-                              </AlertDescription>
-                            </Alert>
-                          ) : (
-                            <Alert>
-                              <AlertCircle className="size-4" />
-                              <AlertTitle>Select a day first</AlertTitle>
-                              <AlertDescription>
-                                Pick an available day to see bookable appointment slots.
-                              </AlertDescription>
-                            </Alert>
-                          )}
-
-                          {isInvalid && (
-                            <FieldError errors={appointmentDateField.state.meta.errors} />
-                          )}
-                        </Field>
-                      )
-                    }}
-                  </form.AppField>
-
-                  <form.AppField name="notes">
-                    {(field) => (
-                      <field.TextArea
-                        label="Notes"
-                        placeholder="Add any context or special requests for your appointment."
-                      />
-                    )}
-                  </form.AppField>
-
-                  {submitErrorMessage ? (
-                    <QueryStateAlert
-                      title="Unable to book appointment"
-                      message={submitErrorMessage}
-                    />
-                  ) : null}
-
-                  <form.AppForm>
-                    <div className="flex justify-end">
-                      <Button
-                        type="submit"
-                        disabled={!specialistId || !appointmentDate || isSubmitting}
-                      >
-                        {isSubmitting ? <Spinner /> : null}
-                        Confirm Appointment
-                      </Button>
-                    </div>
-                  </form.AppForm>
-                </div>
               </div>
             )
           }}
