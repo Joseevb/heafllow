@@ -103,8 +103,8 @@ function DashboardLayout({
       <SidebarInset className="bg-card">
         <ContentHeader />
 
-        <div className="flex-1 p-4 pl-0 max-md:p-3">
-          <div className="h-full rounded-2xl bg-background p-6 max-md:rounded-none max-md:p-4">
+        <div className="flex-1 md:p-4 md:pl-0">
+          <div className="h-full rounded-2xl bg-background p-4 max-md:rounded-none md:p-6">
             <Outlet />
           </div>
         </div>

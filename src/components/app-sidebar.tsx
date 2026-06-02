@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { Link } from '@tanstack/react-router'
+import { Image } from '@unpic/react'
 import { ChevronRight, ChevronUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
@@ -22,10 +23,12 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
@@ -54,6 +57,9 @@ type SidebarItem = SidebarItemLink | SidebarItemCollapsible
 
 export type SidebarItems = ReadonlyArray<SidebarItem>
 
+const sidebarFadeClass =
+  'transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:opacity-0'
+
 function CollapsibleItem({ item }: { item: SidebarItemCollapsible }) {
   const { state, isMobile } = useSidebar()
   const [open, setOpen] = useState(false)
@@ -73,8 +79,8 @@ function CollapsibleItem({ item }: { item: SidebarItemCollapsible }) {
             render={
               <SidebarMenuButton tooltip={item.title}>
                 <item.icon />
-                <span>{item.title}</span>
-                <ChevronRight className="ml-auto opacity-50" />
+                <span className={sidebarFadeClass}>{item.title}</span>
+                <ChevronRight className={cn('ml-auto opacity-50', sidebarFadeClass)} />
               </SidebarMenuButton>
             }
           />
@@ -98,10 +104,11 @@ function CollapsibleItem({ item }: { item: SidebarItemCollapsible }) {
           render={
             <CollapsibleTrigger>
               <item.icon />
-              <span>{item.title}</span>
+              <span className={sidebarFadeClass}>{item.title}</span>
               <ChevronUp
                 className={cn(
-                  'ml-auto transition-transform duration-200',
+                  'ml-auto transition-[opacity,transform] duration-200 ease-linear',
+                  'group-data-[collapsible=icon]:opacity-0',
                   open ? 'rotate-0' : 'rotate-180',
                 )}
               />
@@ -141,9 +148,41 @@ export function AppSidebar({
       className="border-r-0 **:overflow-x-hidden **:overflow-y-hidden"
       onTransitionEnd={handleTransitionEnd}
     >
+      <SidebarHeader
+        className={cn('group/sidebar-header relative h-19 justify-center overflow-hidden')}
+      >
+        <div
+          className={cn(
+            'absolute inset-x-2 inset-y-0 z-10 flex items-center justify-between gap-2 opacity-100',
+            'transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:z-0 group-data-[collapsible=icon]:opacity-0',
+          )}
+        >
+          <div className="flex shrink-0 justify-start">
+            <Image src="/logo624.png" alt="Healflow logo" width={150} height={60} />
+          </div>
+          <SidebarTrigger className="relative z-10 hidden shrink-0 md:inline-flex" />
+        </div>
+        <div
+          className={cn(
+            'pointer-events-none absolute inset-x-2 inset-y-0 z-0 flex items-center opacity-0',
+            'transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:pointer-events-auto group-data-[collapsible=icon]:z-10 group-data-[collapsible=icon]:opacity-100',
+          )}
+        >
+          <div className="flex shrink-0 justify-start">
+            <Image
+              src="/logo220.png"
+              alt="Healflow logo"
+              width={34}
+              height={34}
+              className="transition-opacity duration-200 ease-linear group-hover/sidebar-header:opacity-0"
+            />
+          </div>
+          <SidebarTrigger className="pointer-events-none absolute left-2 hidden opacity-0 transition-opacity duration-200 ease-linear group-hover/sidebar-header:pointer-events-auto group-hover/sidebar-header:opacity-100 md:inline-flex" />
+        </div>
+      </SidebarHeader>
       <SidebarContent className="border-r-0">
         <SidebarGroup>
-          <SidebarGroupLabel>HealFlow</SidebarGroupLabel>
+          <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items(baseUrl).map((item) =>
@@ -156,7 +195,7 @@ export function AppSidebar({
                       render={
                         <Link to={item.url}>
                           <item.icon />
-                          <span>{item.title}</span>
+                          <span className={sidebarFadeClass}>{item.title}</span>
                         </Link>
                       }
                     />

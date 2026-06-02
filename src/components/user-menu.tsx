@@ -19,7 +19,7 @@ import {
 import { MoonIcon } from '@/components/ui/moon'
 import { SunIcon } from '@/components/ui/sun'
 import { signOut } from '@/lib/auth-client'
-import { getInitials } from '@/lib/utils'
+import { cn, getInitials } from '@/lib/utils'
 
 export function UserMenu({
   user,
@@ -46,7 +46,12 @@ export function UserMenu({
               <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
             </Avatar>
             {!compact ? (
-              <div className="flex flex-col items-start text-sm">
+              <div
+                className={cn(
+                  'flex flex-col items-start text-sm transition-opacity duration-200 ease-linear',
+                  'group-data-[collapsible=icon]:opacity-0',
+                )}
+              >
                 <span className="font-medium">{user.name}</span>
                 <span className="text-xs text-muted-foreground">{user.email}</span>
               </div>
