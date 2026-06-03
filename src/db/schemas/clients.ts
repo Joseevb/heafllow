@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { check, index, sqliteTable, unique } from 'drizzle-orm/sqlite-core'
+import { check, index, sqliteTable } from 'drizzle-orm/sqlite-core'
 
 import { users } from '@/db/schemas/auth'
 
@@ -28,6 +28,5 @@ export const clients = sqliteTable(
     index('clients_first_name_idx').on(t.firstName),
     index('clients_primary_care_specialist_idx').on(t.primaryCareSpecialist),
     check('client_not_specialist', sql`${t.clientId} != ${t.primaryCareSpecialist}`),
-    unique('clients_phone_number_idx').on(t.phoneNumber),
   ],
 )
