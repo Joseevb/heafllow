@@ -49,7 +49,7 @@ export function CTASection() {
               </>
             ) : (
               <>
-                <Button
+                <Button nativeButton={false}
                   size="lg"
                   className="rounded-full bg-primary px-8 py-6 text-base font-black text-primary-foreground hover:bg-primary/90"
                   render={
