@@ -67,7 +67,7 @@ export function HeroSection() {
           <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
             {!isAuthenticated ? (
               <>
-                <Button
+                <Button nativeButton={false}
                   size="lg"
                   className="w-full rounded-full bg-primary px-8 py-6 text-base font-bold text-primary-foreground shadow-sm hover:bg-primary/90 sm:w-auto"
                   render={
