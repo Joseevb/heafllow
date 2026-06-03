@@ -177,7 +177,7 @@ export function AppSidebar({
               className="transition-opacity duration-200 ease-linear group-hover/sidebar-header:opacity-0"
             />
           </div>
-          <SidebarTrigger className="pointer-events-none absolute left-2 hidden opacity-0 transition-opacity duration-200 ease-linear group-hover/sidebar-header:pointer-events-auto group-hover/sidebar-header:opacity-100 md:inline-flex" />
+          <SidebarTrigger className="pointer-events-none absolute left-0 hidden opacity-0 transition-opacity duration-200 ease-linear group-hover/sidebar-header:pointer-events-auto group-hover/sidebar-header:opacity-100 md:inline-flex" />
         </div>
       </SidebarHeader>
       <SidebarContent className="border-r-0">
