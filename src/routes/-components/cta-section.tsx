@@ -31,7 +31,8 @@ export function CTASection() {
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
             {!isAuthenticated ? (
               <>
-                <Button nativeButton={false}
+                <Button
+                  nativeButton={false}
                   size="lg"
                   className="rounded-full bg-primary px-8 py-6 text-base font-black text-primary-foreground hover:bg-primary/90"
                   render={
@@ -40,7 +41,8 @@ export function CTASection() {
                     </Link>
                   }
                 />
-                <Button nativeButton={false}
+                <Button
+                  nativeButton={false}
                   variant="outline"
                   size="lg"
                   className="rounded-full border-slate-300 bg-white/70 px-8 py-6 text-base font-bold hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800"
@@ -49,7 +51,8 @@ export function CTASection() {
               </>
             ) : (
               <>
-                <Button nativeButton={false}
+                <Button
+                  nativeButton={false}
                   size="lg"
                   className="rounded-full bg-primary px-8 py-6 text-base font-black text-primary-foreground hover:bg-primary/90"
                   render={
@@ -59,7 +62,8 @@ export function CTASection() {
                     </Link>
                   }
                 />
-                <Button nativeButton={false}
+                <Button
+                  nativeButton={false}
                   variant="outline"
                   size="lg"
                   className="rounded-full border-slate-300 bg-white/70 px-8 py-6 text-base font-bold hover:bg-white dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800"

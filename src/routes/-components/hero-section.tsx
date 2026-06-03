@@ -67,7 +67,8 @@ export function HeroSection() {
           <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
             {!isAuthenticated ? (
               <>
-                <Button nativeButton={false}
+                <Button
+                  nativeButton={false}
                   size="lg"
                   className="w-full rounded-full bg-primary px-8 py-6 text-base font-bold text-primary-foreground shadow-sm hover:bg-primary/90 sm:w-auto"
                   render={
@@ -76,7 +77,8 @@ export function HeroSection() {
                     </Link>
                   }
                 />
-                <Button nativeButton={false}
+                <Button
+                  nativeButton={false}
                   variant="outline"
                   size="lg"
                   className="w-full rounded-full border-cyan-700/15 bg-white/55 px-8 py-6 text-base text-slate-800 hover:bg-white hover:text-slate-950 sm:w-auto dark:border-cyan-200/25 dark:bg-slate-900/40 dark:text-white dark:hover:bg-slate-800 dark:hover:text-white"
@@ -85,7 +87,8 @@ export function HeroSection() {
               </>
             ) : (
               <>
-                <Button nativeButton={false}
+                <Button
+                  nativeButton={false}
                   size="lg"
                   className="w-full rounded-full bg-primary px-8 py-6 text-base font-bold text-primary-foreground shadow-sm hover:bg-primary/90 sm:w-auto"
                   render={
@@ -94,7 +97,8 @@ export function HeroSection() {
                     </Link>
                   }
                 />
-                <Button nativeButton={false}
+                <Button
+                  nativeButton={false}
                   variant="outline"
                   size="lg"
                   className="w-full rounded-full border-cyan-700/15 bg-white/55 px-8 py-6 text-base text-slate-800 hover:bg-white hover:text-slate-950 sm:w-auto dark:border-cyan-200/25 dark:bg-slate-900/40 dark:text-white dark:hover:bg-slate-800 dark:hover:text-white"
