@@ -362,7 +362,7 @@ bun run test
 Run type checks and linting:
 
 ```bash
-bun run lint
+bun run validate
 ```
 
 Check formatting:
